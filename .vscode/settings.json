@@ -1,0 +1,5 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "svelte.svelte-vscode",
+  "svelte.enable-ts-plugin": true
+}
