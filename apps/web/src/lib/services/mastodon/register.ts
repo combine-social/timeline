@@ -1,0 +1,73 @@
+/*
+This was taken from https://github.com/cheeaun/phanpy and is covered by the MIT license:
+
+The MIT License (MIT)
+Copyright © 2023 Lim Chee Aun, http://cheeaun.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the “Software”), to deal in the Software without
+restriction, including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+export async function registerApplication(instanceURL: string) {
+	const registrationParams = new URLSearchParams({
+		client_name: 'Yam',
+		redirect_uris: location.origin,
+		scopes: 'read write follow',
+		website: location.href
+	});
+	const registrationResponse = await fetch(`https://${instanceURL}/api/v1/apps`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: registrationParams.toString()
+	});
+	const registrationJSON = await registrationResponse.json();
+	console.log({ registrationJSON });
+	return registrationJSON;
+}
+
+export async function getAuthorizationURL(instanceURL: string, client_id: string) {
+	const authorizationParams = new URLSearchParams({
+		client_id,
+		scope: 'read write follow',
+		redirect_uri: location.origin,
+		// redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+		response_type: 'code'
+	});
+	const authorizationURL = `https://${instanceURL}/oauth/authorize?${authorizationParams.toString()}`;
+	return authorizationURL;
+}
+
+export async function getAccessToken(instanceURL: string, client_id: string, client_secret: string, code: string) {
+	const params = new URLSearchParams({
+		client_id,
+		client_secret,
+		redirect_uri: location.origin,
+		grant_type: 'authorization_code',
+		code,
+		scope: 'read write follow'
+	});
+	const tokenResponse = await fetch(`https://${instanceURL}/oauth/token`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: params.toString()
+	});
+	const tokenJSON = await tokenResponse.json();
+	console.log({ tokenJSON });
+	return tokenJSON;
+}

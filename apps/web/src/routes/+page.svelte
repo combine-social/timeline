@@ -1,2 +1,8 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { Login } from '$lib/components/login';
+</script>
+
+<template>
+	<h1>Toot Tail</h1>
+	<Login />
+</template>
