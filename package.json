@@ -1,0 +1,22 @@
+{
+  "name": "toottail",
+  "version": "1.0.0",
+  "author": "Anders Borch <anders@cyborch.com>",
+  "description": "Monitor your home timeline and pre-fetch contexts for all messages",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": ["packages/*", "apps/*"],
+  "keywords": [
+    "mastodon"
+  ],
+  "volta": {
+    "node": "19.7.0",
+    "npm": "9.6.0"
+  },
+  "devDependencies": {
+    "turbo": "^1.8.3"
+  }
+}
