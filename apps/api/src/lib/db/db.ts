@@ -10,8 +10,8 @@ export function initializeDB() {
 
 export declare type ConnectionRoutine<T> = (connection: DatabasePoolConnection) => Promise<T>;
 
-export async function connect<T>(connectionRoutine: ConnectionRoutine<T>) {
-	await pool.connect(connectionRoutine);
+export async function connect<T>(connectionRoutine: ConnectionRoutine<T>): Promise<T> {
+	return await pool.connect(connectionRoutine);
 }
 
 export async function ping() {

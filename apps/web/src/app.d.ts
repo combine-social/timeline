@@ -7,6 +7,11 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 	}
+	// Fix missing properties on Event
+	// https://freshman.tech/snippets/typescript/fix-value-not-exist-eventtarget/
+	type HTMLElementEvent<T extends HTMLElement> = Event & {
+		currentTarget: EventTarget & T;
+	};
 }
 
 export {};
