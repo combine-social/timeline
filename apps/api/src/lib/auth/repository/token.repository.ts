@@ -3,14 +3,19 @@ import { sql } from 'slonik';
 import { RegistrationModel } from './registration.model';
 import { TokenModel } from './token.model';
 
-interface TokenQueryRow {
+/*
+  A row in the result of a query to tokens joined with registrations.
+  The rows have registration_id which should be replaced with
+  registration populated with the joined columns from registrations.
+*/
+interface TokenRow {
 	token: Omit<TokenModel, 'registration'> & { registration_id?: number };
 	registration: RegistrationModel;
 }
 
 export async function findAllTokens(): Promise<TokenModel[]> {
 	return await connect(async (connection) => {
-		const rows = await connection.many<TokenQueryRow>(sql`
+		const rows = await connection.many<TokenRow>(sql`
       select 
         to_json(r.*) as registration,
         to_json(t.*) as token
@@ -22,10 +27,31 @@ export async function findAllTokens(): Promise<TokenModel[]> {
 			const token = row.token;
 			delete token.registration_id;
 			return {
-				...row.token,
+				...token,
 				registration: row.registration
 			};
 		});
+	});
+}
+
+export async function findTokenById(id: number): Promise<TokenModel | null> {
+	return await connect(async (connection) => {
+		const row = await connection.maybeOne<TokenRow>(sql`
+      select 
+        to_json(r.*) as registration,
+        to_json(t.*) as token
+      from registrations r 
+      join tokens t 
+        on r.id = t.registration_id
+      where t.id = ${id}
+    `);
+		if (!row) return null;
+		const token = row.token;
+		delete token.registration_id;
+		return {
+			...token,
+			registration: row.registration
+		};
 	});
 }
 

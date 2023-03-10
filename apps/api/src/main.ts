@@ -1,7 +1,9 @@
 import express from 'express';
 import type { Express, Request, Response } from 'express';
 import { initializeDB, ping } from '$lib/db';
-import { code, redirectToAuthUrl } from './routes/auth/login.controller';
+import { initializeQueue } from '$lib/queue';
+import { code, redirectToAuthUrl } from './routes/auth';
+import { initializeCache } from '$lib/cache';
 
 const app: Express = express();
 const port = parseInt(process.env.PORT || '0') || 3000;
@@ -13,6 +15,8 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 initializeDB();
+initializeQueue();
+initializeCache();
 (async () => {
 	try {
 		await ping();

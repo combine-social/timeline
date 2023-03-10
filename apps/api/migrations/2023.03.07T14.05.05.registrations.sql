@@ -17,6 +17,7 @@ create table tokens (
 	scope varchar,
 	created_at int,
   registration_id int not null,
+  fail_count int,
 
   constraint fk_registration
     foreign key(registration_id) 

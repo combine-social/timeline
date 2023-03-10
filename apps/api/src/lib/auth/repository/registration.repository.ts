@@ -2,6 +2,14 @@ import { connect } from '$lib/db';
 import { sql } from 'slonik';
 import { RegistrationModel } from './registration.model';
 
+export async function findAllRegistrations(): Promise<readonly RegistrationModel[]> {
+	return await connect(async (connection) => {
+		return await connection.many<RegistrationModel>(sql`
+      select * from registrations;
+    `);
+	});
+}
+
 export async function findRegistrationByInstance(
 	instanceURL: string
 ): Promise<RegistrationModel | null> {
