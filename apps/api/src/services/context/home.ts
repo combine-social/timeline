@@ -1,5 +1,5 @@
 import { deleteToken, findAllTokens, TokenModel, updateToken } from '$lib/auth';
-import { get, statusKey } from '$lib/cache';
+import { get, set, statusKey } from '$lib/cache';
 import { getContextInfo } from '$lib/mastodon/status-id';
 import { throttledRequest } from '$lib/mastodon/throttled';
 import { send } from '$lib/queue';
@@ -34,6 +34,7 @@ export async function getHome(token: TokenModel): Promise<void> {
 	);
 	if (!statuses) {
 		const failures = (token.fail_count || 0) + 1;
+		console.error(`Failed getting status, attempt no: ${failures}`);
 		if (failures > max_fail_count) {
 			await deleteToken(token.id);
 		} else {
@@ -41,18 +42,31 @@ export async function getHome(token: TokenModel): Promise<void> {
 			await updateToken(token);
 		}
 	} else {
-		for (const status of statuses) {
-			if (!status.url) continue;
+		token.fail_count = 0;
+		await updateToken(token);
+		console.log(`Got ${statuses.length} statuses from ${token.registration.instance_url}`);
+		for (let status of statuses) {
+			if (status.reblog) status = status.reblog;
+			if (!status.url) {
+				console.log(`No url for status ${status.id}, skipping`);
+				continue;
+			}
 			// prettier-ignore
 			if (await get(
         statusKey(
           token.registration.instance_url,
           status.url)
         )
-      ) continue; // skip this status if it has recently been fetched
-			const info = getContextInfo(status);
-			if (!info) continue;
-			await send(info.instanceURL, info);
+      ) {
+				console.log(`Found ${status.url} from home in cache, skipping`);
+				continue; // skip this status if it has recently been fetched
+			}
+			console.log(`Adding ${status.url} to queue: ${token.registration.instance_url}`);
+			await set(statusKey(token.registration.instance_url, status.url), true);
+			await send(token.registration.instance_url, {
+				instanceURL: token.registration.instance_url,
+				statusURL: status.url
+			});
 		}
 	}
 }

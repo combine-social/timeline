@@ -55,6 +55,28 @@ export async function findTokenById(id: number): Promise<TokenModel | null> {
 	});
 }
 
+export async function findFirstTokenByInstance(instanceURL: string): Promise<TokenModel | null> {
+	return await connect(async (connection) => {
+		const row = await connection.maybeOne<TokenRow>(sql`
+      select 
+        to_json(r.*) as registration,
+        to_json(t.*) as token
+      from registrations r 
+      join tokens t 
+        on r.id = t.registration_id
+      where r.instance_url = ${instanceURL}
+      limit 1
+    `);
+		if (!row) return null;
+		const token = row.token;
+		delete token.registration_id;
+		return {
+			...token,
+			registration: row.registration
+		};
+	});
+}
+
 export async function createToken(token: TokenModel): Promise<TokenModel> {
 	return await connect(async (connection) => {
 		const results = await connection.query<number>(sql`
@@ -92,7 +114,7 @@ export async function deleteToken(id: number) {
 export async function updateToken(token: TokenModel): Promise<void> {
 	await connect(async (connection) => {
 		await connection.query(sql`
-      update registrations set
+      update tokens set
         access_token = ${token.access_token},
         token_type = ${token.token_type},
         scope = ${token.scope},

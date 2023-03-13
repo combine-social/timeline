@@ -4,6 +4,7 @@ import { initializeDB, ping } from '$lib/db';
 import { initializeQueue } from '$lib/queue';
 import { code, redirectToAuthUrl } from './routes/auth';
 import { initializeCache } from '$lib/cache';
+import { loop } from './services/context';
 
 const app: Express = express();
 const port = parseInt(process.env.PORT || '0') || 3000;
@@ -21,6 +22,7 @@ initializeCache();
 	try {
 		await ping();
 		console.log(`⚡️[server]: DB connection up!`);
+		loop();
 	} catch (error) {
 		console.error(`✖︎ [server]: DB connection failed: ${error}`);
 	}

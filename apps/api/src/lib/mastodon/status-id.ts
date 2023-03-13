@@ -1,15 +1,12 @@
-import type { mastodon } from 'masto';
+import { ContextRequest } from './contextrequest.model';
 
-export interface ContextInfo {
-	instanceURL: string; // actually a hostname
-	contextURL: string; // url used for context request
-}
-
-export function getContextInfo(status: mastodon.v1.Status): ContextInfo | null {
-	if (!status.url) return null;
-	const instanceURL = new URL(status.url).hostname;
+export function getContextInfo(statusURL: string): ContextRequest | null {
+	const url = new URL(statusURL);
+	const instanceURL = url.hostname;
+	const statusID = url.pathname.split('/').pop();
+	const contextURL = `https://${instanceURL}/api/v1/statuses/${statusID}/context`;
 	return {
 		instanceURL,
-		contextURL: `https://${instanceURL}/api/v1/statuses/${status.id}/context`
+		statusURL: contextURL
 	};
 }

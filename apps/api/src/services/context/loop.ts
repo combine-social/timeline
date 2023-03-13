@@ -2,8 +2,11 @@ import { getNextContext } from './context';
 import { getAllHomes } from './home';
 import { getInstances } from './list';
 
-async function poll() {
+async function pollHomes() {
 	await getAllHomes();
+}
+
+async function pollQueue() {
 	// prettier-ignore
 	await Promise.all([
     (await getInstances()) // each instance is also a queue, for each instance
@@ -11,15 +14,34 @@ async function poll() {
   ]);
 }
 
-export function loop() {
+function loopHomes() {
+	pollHomes();
 	setTimeout(() => {
-		// wait 2 seconds
-		poll() // then poll
-			.then(loop) // when completed, repeat
+		// wait 15 minutes
+		pollHomes() // then poll
+			.then(loopHomes) // when completed, repeat
 			.catch((error) => {
 				// on error, try again
 				console.error(error);
-				loop();
+				loopHomes();
+			});
+	}, 15 * 60 * 1000);
+}
+
+function loopQueue() {
+	setTimeout(() => {
+		// wait 2 seconds
+		pollQueue() // then poll
+			.then(loopQueue) // when completed, repeat
+			.catch((error) => {
+				// on error, try again
+				console.error(error);
+				loopQueue();
 			});
 	}, 2000);
+}
+
+export function loop() {
+	loopHomes();
+	loopQueue();
 }
