@@ -1,0 +1,9 @@
+VERSION 0.7
+IMPORT ../.. AS root
+
+all:
+  BUILD root+prune --app='api'
+  BUILD root+build --app='api'
+  FROM root+final --app='api'
+  CMD ["node", "--max-old-space-size=64", "/app/apps/api/dist/main.js"]
+  SAVE IMAGE cyborch/toottail-api:latest

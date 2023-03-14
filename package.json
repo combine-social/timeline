@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx turbo run build --ignore=\"['*','!apps','!packages']\"",
+    "docker:build": "npx turbo run docker:build --ignore=\"['*','!apps','!packages', '!Earthfile']\""
   },
   "workspaces": [
     "packages/*",
