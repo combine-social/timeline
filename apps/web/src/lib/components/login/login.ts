@@ -1,9 +1,11 @@
-import { getAuthorizationURL, registerApplication } from '$lib/services/mastodon';
+import type { LoginRequestBody } from 'types';
 
 export async function login(instanceURL: string) {
-	await fetch('/api/v1/login', {
-		body: JSON.stringify({
-			instanceURL
-		})
+	const body: LoginRequestBody = {
+		instanceURL
+	};
+	await fetch('http://localhost:3000/api/v1/login', {
+		method: 'POST',
+		body: JSON.stringify(body)
 	});
 }

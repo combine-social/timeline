@@ -1,16 +1,9 @@
 import Express from 'express';
+import type { AuthCodeResponseBody, LoginRequestBody } from 'types';
 import { authenticate, register } from './register.service';
-
-interface LoginRequestBody {
-	instanceURL: string;
-}
 
 interface CodeRequestParameters {
 	code: string;
-}
-
-interface CodeResponseBody {
-	result: boolean;
 }
 
 const website = process.env.WEBSITE || 'http://localhost:5173';
@@ -31,8 +24,8 @@ export async function redirectToAuthUrl(
 }
 
 export async function code(
-	req: Express.Request<object, CodeResponseBody, void, CodeRequestParameters>,
-	res: Express.Response
+	req: Express.Request<object, AuthCodeResponseBody, void, CodeRequestParameters>,
+	res: Express.Response<AuthCodeResponseBody>
 ) {
 	console.log(`params: ${req.query.code}`);
 	const code = req.query.code;

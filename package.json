@@ -7,7 +7,8 @@
   "main": "index.js",
   "scripts": {
     "build": "npx turbo run build --ignore=\"['*','!apps','!packages']\"",
-    "docker:build": "npx turbo run docker:build --ignore=\"['*','!apps','!packages', '!Earthfile']\""
+    "docker:build": "npx turbo run docker:build --ignore=\"['*','!apps','!packages', '!Earthfile']\"",
+    "docker:push": "npx turbo run docker:push --ignore=\"['*','!apps','!packages', '!Earthfile']\""
   },
   "workspaces": [
     "packages/*",

@@ -9,7 +9,8 @@
     "build": "tsc",
     "migrate": "node bin/migrate.js",
     "migrate:local": "POSTGRES_CONNECTION_STRING=postgresql://localhost:5432/test node bin/migrate.js",
-    "docker:build": "cd ../.. && earthly ./apps/api+all"
+    "docker:build": "cd ../.. && earthly ./apps/api+all",
+    "docker:push": "docker push cyborch/toottail-api:latest"
   },
   "author": "Anders Borch <anders@cyborch.com>",
   "license": "MIT",
@@ -35,6 +36,7 @@
     "redis": "^4.6.5",
     "semaphore": "^1.1.0",
     "slonik": "^29.2.0",
+    "types": "*",
     "uuid": "^9.0.0"
   }
 }

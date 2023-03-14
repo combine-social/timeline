@@ -11,10 +11,13 @@
 		"test:watch": "vitest",
 		"test": "vitest --run",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+    "docker:build": "cd ../.. && earthly ./apps/web+all",
+		"docker:push": "docker push cyborch/toottail-web:latest"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-node": "^1.2.2",
 		"@sveltejs/kit": "^1.5.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",

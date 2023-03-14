@@ -7,6 +7,9 @@
     },
     "docker:build": {
       "dependsOn": ["^docker:build"]
+    },
+    "docker:push": {
+      "dependsOn": ["^docker:push"]
     }
   }
 }

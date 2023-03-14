@@ -13,7 +13,7 @@ prune:
   COPY ./package*.json ./
   COPY ./turbo.json ./
   COPY ./apps/$app/ ./apps/$app/
-  # COPY ./packages/ ./packages/
+  COPY ./packages/ ./packages/
   RUN npm install
   RUN npx turbo prune --scope=$app --docker
   SAVE ARTIFACT out/full /$app/out/full

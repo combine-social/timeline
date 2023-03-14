@@ -25,14 +25,14 @@ import type { RegistrationDTO } from './dto/registration.dto';
 import { v4 as uuidv4 } from 'uuid';
 import type { TokenDTO } from './dto/token.dto';
 
-const client_name = process.env.CLIENT_NAME || 'Toot tail';
+const client_name = process.env.CLIENT_NAME || 'Post Context';
 const website = process.env.WEBSITE || 'http://localhost:5173';
 
 export async function registerApplication(instanceURL: string): Promise<RegistrationDTO> {
 	const nonce = uuidv4();
 	const registrationParams = new URLSearchParams({
 		client_name,
-		redirect_uris: `${website}/api/v1/auth/code/${nonce}`,
+		redirect_uris: `${website}/code/${nonce}`,
 		scopes: 'read',
 		website
 	});

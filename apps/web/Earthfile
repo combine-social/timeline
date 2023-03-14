@@ -1,0 +1,9 @@
+VERSION 0.7
+IMPORT ../.. AS root
+
+all:
+  BUILD root+prune --app='web'
+  BUILD root+build --app='web'
+  FROM root+final --app='web'
+  CMD ["node", "--max-old-space-size=64", "/app/apps/web/build/index.js"]
+  SAVE IMAGE cyborch/toottail-web:latest
