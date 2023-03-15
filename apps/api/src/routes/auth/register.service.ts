@@ -3,11 +3,13 @@ import {
 	createToken,
 	findRegistrationByInstance,
 	findRegistrationByNonce,
+	findTokenById,
 	getAccessToken,
 	getAuthorizationURL,
 	registerApplication
 } from '$lib/auth';
 import type { RegistrationDTO, TokenDTO, RegistrationModel, TokenModel } from '$lib/auth';
+import { getHome } from '$services/context';
 
 function registrationDtoToModel(
 	dto: RegistrationDTO,
@@ -55,6 +57,14 @@ export async function authenticate(url: string, nonce: string, code: string): Pr
 	console.log(`Got ${JSON.stringify(dto, null, 2)}`);
 	if (!dto) return false;
 	const model = tokenDtoToModel(dto, registration);
-	await createToken(model);
-	return true;
+	const token = await createToken(model);
+
+	/*
+	Fetch home timeline immediately, and return results.
+	This should lead to a better UX where new users won't have to wait
+	as long before they see replies start to show up, and also verify
+	that the authentication actually succeeded.
+	*/
+	await getHome(token);
+	return token.fail_count === 0;
 }

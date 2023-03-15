@@ -19,6 +19,12 @@
       ],
       "$lib/*": [
         "./src/lib/*"
+      ],
+      "$services": [
+        "./src/services"
+      ],
+      "$services/*": [
+        "./src/services/*"
       ]
     },
     "rootDirs": [
