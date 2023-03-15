@@ -5,5 +5,11 @@ all:
   BUILD root+prune --app='web'
   BUILD root+build --app='web'
   FROM root+final --app='web'
-  CMD ["node", "--max-old-space-size=64", "/app/apps/web/build/index.js"]
+  CMD [ \
+    "node", \
+    "-r", "ts-node/register", \
+    "-r", "tsconfig-paths/register", \
+    "--max-old-space-size=128", \
+    "/app/apps/web/dist/index.js" \
+  ]
   SAVE IMAGE cyborch/toottail-web:latest
