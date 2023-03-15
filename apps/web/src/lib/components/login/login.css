@@ -1,0 +1,46 @@
+input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  margin-top: 8px;
+  height: 3rem;
+  font-size: 16px;
+}
+
+input[type="submit"] {
+  background-color: rgb(99, 100, 235);
+  border: none;
+  color: var(--light-color);
+  font-weight: bolder;
+  padding: 12px 40px;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 8px;
+  display: block;
+}
+
+input[type="submit"]:hover {
+  background-color: rgb(79, 80, 184);
+}
+
+input[type="text"] {
+  background-color: var(--light-color);
+  border: none;
+  color: black;
+  padding: 10px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 8px;
+  display: block;
+}
+
+input:focus {
+  outline-width: 0;
+  outline: none;
+}
+
+label {
+  display: block;
+  opacity: 0.8;
+  font-size: smaller;
+}

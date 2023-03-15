@@ -1,0 +1,31 @@
+:global(html) {
+  --light-color: rgb(236, 236, 236);
+  font-family: 'Manrope', 
+    'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', 
+    Geneva, Verdana, sans-serif;
+  background-color: rgb(25, 27, 34);
+  color: var(--light-color);
+  font-size: 16px;
+}
+
+h1 {
+  font-size: inherit;
+}
+
+h2 {
+  text-align: center;
+  font-size: 35pt;
+  margin-bottom: 5vh;
+}
+
+.content {
+  margin-left: 10vw;
+  margin-right: 10vw;
+}
+
+li {
+  line-height: 2.5em;
+  padding-left: 0.5rem;
+  font-weight: bolder;
+  font-size: large;
+}
