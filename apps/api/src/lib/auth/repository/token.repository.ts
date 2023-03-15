@@ -15,22 +15,26 @@ interface TokenRow {
 
 export async function findAllTokens(): Promise<TokenModel[]> {
 	return await connect(async (connection) => {
-		const rows = await connection.many<TokenRow>(sql`
-      select 
-        to_json(r.*) as registration,
-        to_json(t.*) as token
-      from registrations r 
-      join tokens t 
-        on r.id = t.registration_id
-    `);
-		return rows.map((row) => {
-			const token = row.token;
-			delete token.registration_id;
-			return {
-				...token,
-				registration: row.registration
-			};
-		});
+		try {
+			const rows = await connection.many<TokenRow>(sql`
+        select 
+          to_json(r.*) as registration,
+          to_json(t.*) as token
+        from registrations r 
+        join tokens t 
+          on r.id = t.registration_id
+      `);
+			return rows.map((row) => {
+				const token = row.token;
+				delete token.registration_id;
+				return {
+					...token,
+					registration: row.registration
+				};
+			});
+		} catch {
+			return [];
+		}
 	});
 }
 
