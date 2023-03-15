@@ -41,8 +41,11 @@ BUILD_APP:
   RUN npm audit --omit=dev
   # RUN npm run lint
   RUN npm run build
-  RUN mkdir -p out/dist && \
-    tar cf dist.tar `find packages apps -name package.json -or -name dist` && \
+  RUN mkdir -p out/dist
+  RUN [ -f apps/$app/tsconfig.prod.json ] && \
+    cp apps/$app/tsconfig.prod.json out/dist/tsconfig.json || \
+    true
+  RUN tar cf dist.tar `find packages apps -name package.json -or -name dist` && \
     cd out/dist && \
     tar xf ../../dist.tar
   SAVE ARTIFACT out/dist /$app/out/dist

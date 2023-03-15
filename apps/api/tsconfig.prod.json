@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "baseUrl": "./apps/api",
+    "paths": {
+      "$lib": [
+        "./dist/lib"
+      ],
+      "$lib/*": [
+        "./dist/lib/*"
+      ]
+    }
+  }
+}
