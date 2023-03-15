@@ -2,14 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^docker:build"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
     "docker:build": {
       "dependsOn": ["^docker:build"]
     },
     "docker:push": {
-      "dependsOn": ["^docker:push"]
+      "dependsOn": ["docker:build", "^docker:push"]
     }
   }
 }
