@@ -48,9 +48,6 @@ export async function code(
 	console.log(`code: ${req.query.code}`);
 	const nonce = req.params.nonce;
 	const code = req.query.code;
-	const url = new URL(website + req.url);
-	url.search = '';
-	console.log(`url: ${url.toString()}`);
-	const result = await authenticate(url.toString(), nonce, code);
-	res.status(result ? 200 : 401).send({ result });
+	const username = await authenticate(nonce, code);
+	res.status(username ? 200 : 401).send({ result: username !== undefined, username });
 }

@@ -1,11 +1,11 @@
 import {
 	createRegistration,
-	createToken,
+	upsertToken,
 	findRegistrationByInstance,
 	findRegistrationByNonce,
-	findTokenById,
 	getAccessToken,
 	getAuthorizationURL,
+	getUsername,
 	registerApplication
 } from '$lib/auth';
 import type { RegistrationDTO, TokenDTO, RegistrationModel, TokenModel } from '$lib/auth';
@@ -26,9 +26,14 @@ function registrationDtoToModel(
 	return model as unknown as RegistrationModel;
 }
 
-function tokenDtoToModel(dto: TokenDTO, registration: RegistrationModel): TokenModel {
+function tokenDtoToModel(
+	dto: TokenDTO,
+	registration: RegistrationModel,
+	username: string
+): TokenModel {
 	return {
 		...dto,
+		username,
 		registration
 	} as TokenModel;
 }
@@ -43,10 +48,10 @@ export async function register(instanceURL: string): Promise<string> {
 	return await getAuthorizationURL(instanceURL, registration.client_id, registration.redirect_uri);
 }
 
-export async function authenticate(url: string, nonce: string, code: string): Promise<boolean> {
+export async function authenticate(nonce: string, code: string): Promise<string | undefined> {
 	const registration = await findRegistrationByNonce(nonce);
 	console.log(`Found ${JSON.stringify(registration, null, 2)}`);
-	if (!registration) return false;
+	if (!registration) return undefined;
 	const dto = await getAccessToken(
 		registration.instance_url,
 		registration.client_id,
@@ -55,9 +60,10 @@ export async function authenticate(url: string, nonce: string, code: string): Pr
 		code
 	);
 	console.log(`Got ${JSON.stringify(dto, null, 2)}`);
-	if (!dto) return false;
-	const model = tokenDtoToModel(dto, registration);
-	const token = await createToken(model);
+	if (!dto) return undefined;
+	const username = await getUsername(dto, registration.instance_url);
+	const model = tokenDtoToModel(dto, registration, username);
+	const token = await upsertToken(model);
 
 	/*
 	Fetch home timeline immediately, and return results.
@@ -66,5 +72,5 @@ export async function authenticate(url: string, nonce: string, code: string): Pr
 	that the authentication actually succeeded.
 	*/
 	await getHome(token);
-	return token.fail_count === 0;
+	return token.fail_count === 0 ? username : undefined;
 }

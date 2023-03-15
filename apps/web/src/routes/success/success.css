@@ -7,3 +7,26 @@
 h1 {
   font-size: 35pt;
 }
+
+button {
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(100% - 20vw);
+  max-width: 400px;
+  box-sizing: border-box;
+  margin-top: 50px;
+  height: 3rem;
+  background-color: rgb(99, 100, 235);
+  border: none;
+  color: var(--light-color);
+  font-weight: bolder;
+  padding: 12px 40px;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 8px;
+  display: block;
+}
+
+button:hover {
+  background-color: rgb(79, 80, 184);
+}

@@ -81,23 +81,32 @@ export async function findFirstTokenByInstance(instanceURL: string): Promise<Tok
 	});
 }
 
-export async function createToken(token: TokenModel): Promise<TokenModel> {
+export async function upsertToken(token: TokenModel): Promise<TokenModel> {
 	return await connect(async (connection) => {
 		const results = await connection.query<number>(sql`
       insert into tokens
       (
+        username,
         access_token,
         token_type,
         scope,
         created_at,
         registration_id
       ) values (
+        ${token.username},
         ${token.access_token},
         ${token.token_type},
         ${token.scope},
         ${token.created_at},
         ${token.registration.id}
-      ) returning id
+      ) on conflict do update set 
+        access_token = ${token.access_token},
+        token_type = ${token.token_type},
+        scope = ${token.scope},
+        created_at = ${token.created_at},
+        registration_id = ${token.registration.id}
+      where username = ${token.username}
+      returning id
     `);
 		return {
 			...token,
@@ -119,6 +128,7 @@ export async function updateToken(token: TokenModel): Promise<void> {
 	await connect(async (connection) => {
 		await connection.query(sql`
       update tokens set
+        username = ${token.username},
         access_token = ${token.access_token},
         token_type = ${token.token_type},
         scope = ${token.scope},

@@ -12,5 +12,5 @@
 </script>
 
 <template>
-	<p>Authorizing...</p>
+	<p />
 </template>

@@ -6,5 +6,5 @@ export async function handleCode(nonce: string) {
 	const code = urlParams.get('code');
 	const response = await fetch(`/api/v1/auth/code/${nonce}?code=${code}`);
 	const body: AuthCodeResponseBody = await response.json();
-	window.location.replace(body.result ? '/success' : '/failure');
+	window.location.replace(body.result ? `/success?username=${body.username}` : '/failure');
 }

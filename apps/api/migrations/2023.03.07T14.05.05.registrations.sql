@@ -13,6 +13,7 @@ create table registrations (
 
 create table tokens (
   id serial primary key,
+  username varchar unique not null,
 	access_token varchar not null,
 	token_type varchar,
 	scope varchar,
