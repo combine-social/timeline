@@ -1,11 +1,20 @@
-import type { LoginRequestBody } from 'types';
+import type { LoginReponseBody, LoginRequestBody } from 'types';
 
 export async function login(instanceURL: string) {
 	const body: LoginRequestBody = {
 		instanceURL
 	};
-	await fetch('http://localhost:3000/api/v1/login', {
+	console.log(`posting ${JSON.stringify(body)}`);
+	const response = await fetch('/api/v1/auth/login', {
 		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		},
+		redirect: 'manual',
 		body: JSON.stringify(body)
 	});
+	console.log(`reponse: ${JSON.stringify(response)}`);
+	const result: LoginReponseBody = await response.json();
+	window.open(result.authURL);
 }

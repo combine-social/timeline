@@ -7,7 +7,8 @@ create table registrations (
   redirect_uri varchar not null,
   client_id varchar not null,
   client_secret varchar not null,
-  vapid_key varchar
+  vapid_key varchar,
+  nonce varchar not null
 );
 
 create table tokens (

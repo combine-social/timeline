@@ -28,7 +28,9 @@ import type { TokenDTO } from './dto/token.dto';
 const client_name = process.env.CLIENT_NAME || 'Post Context';
 const website = process.env.WEBSITE || 'http://localhost:5173';
 
-export async function registerApplication(instanceURL: string): Promise<RegistrationDTO> {
+export async function registerApplication(
+	instanceURL: string
+): Promise<RegistrationDTO & { nonce: string }> {
 	const nonce = uuidv4();
 	const registrationParams = new URLSearchParams({
 		client_name,
@@ -43,9 +45,12 @@ export async function registerApplication(instanceURL: string): Promise<Registra
 		},
 		body: registrationParams.toString()
 	});
-	const registrationJSON = await registrationResponse.json();
+	const registrationJSON: RegistrationDTO = await registrationResponse.json();
 	console.log({ registrationJSON });
-	return registrationJSON as RegistrationDTO;
+	return {
+		...registrationJSON,
+		nonce
+	};
 }
 
 export async function getAuthorizationURL(

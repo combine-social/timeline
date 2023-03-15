@@ -4,9 +4,13 @@ import { RegistrationModel } from './registration.model';
 
 export async function findAllRegistrations(): Promise<readonly RegistrationModel[]> {
 	return await connect(async (connection) => {
-		return await connection.many<RegistrationModel>(sql`
-      select * from registrations;
-    `);
+		try {
+			return await connection.many<RegistrationModel>(sql`
+        select * from registrations;
+      `);
+		} catch {
+			return [];
+		}
 	});
 }
 
@@ -22,13 +26,11 @@ export async function findRegistrationByInstance(
 	});
 }
 
-export async function findRegistrationByRedirect(
-	redirect_uri: string
-): Promise<RegistrationModel | null> {
+export async function findRegistrationByNonce(nonce: string): Promise<RegistrationModel | null> {
 	return await connect(async (connection) => {
 		return await connection.maybeOne<RegistrationModel>(sql`
       select * from registrations
-      where redirect_uri = ${redirect_uri}
+      where nonce = ${nonce}
       limit 1
     `);
 	});
@@ -48,7 +50,8 @@ export async function createRegistration(
         redirect_uri,
         client_id,
         client_secret,
-        vapid_key
+        vapid_key,
+        nonce
       ) values (
         ${registration.instance_url || null},
         ${registration.registration_id},
@@ -57,7 +60,8 @@ export async function createRegistration(
         ${registration.redirect_uri},
         ${registration.client_id},
         ${registration.client_secret},
-        ${registration.vapid_key || null}
+        ${registration.vapid_key || null},
+        ${registration.nonce}
       ) returning id
     `);
 		return {
@@ -78,7 +82,8 @@ export async function updateRegistration(registration: RegistrationModel): Promi
         redirect_uri = ${registration.client_id || null},
         client_id = ${registration.client_secret || null},
         client_secret = ${registration.vapid_key || null},
-        vapid_key = ${registration.vapid_key || null}
+        vapid_key = ${registration.vapid_key || null},
+        nonce = ${registration.nonce}
       where id = ${registration.id}
     `);
 	});

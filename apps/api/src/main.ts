@@ -29,7 +29,7 @@ initializeCache();
 })();
 
 app.post('/api/v1/auth/login', redirectToAuthUrl);
-app.get('/api/v1/auth/code/*', code);
+app.get('/api/v1/auth/code/:nonce', code);
 
 app.listen(port, () => {
 	console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
