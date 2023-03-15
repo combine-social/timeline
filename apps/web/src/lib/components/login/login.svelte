@@ -7,7 +7,7 @@
 	<form on:submit|preventDefault={() => login(instanceURL)}>
 		<label for="instance">Mastodon instance:</label>
 		<input type="text" name="instance" placeholder="my.social" bind:value={instanceURL} />
-		<input type="submit" value="Start" />
+		<input type="submit" value="Authorise" />
 	</form>
 </template>
 
