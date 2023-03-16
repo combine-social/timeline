@@ -83,7 +83,7 @@ export async function findFirstTokenByInstance(instanceURL: string): Promise<Tok
 
 export async function upsertToken(token: TokenModel): Promise<TokenModel> {
 	return await connect(async (connection) => {
-		const results = await connection.query<number>(sql`
+		const id = await connection.oneFirst<number>(sql`
       insert into tokens
       (
         username,
@@ -99,18 +99,18 @@ export async function upsertToken(token: TokenModel): Promise<TokenModel> {
         ${token.scope},
         ${token.created_at},
         ${token.registration.id}
-      ) on conflict do update set 
+      ) on conflict on constraint uniq_username do update set 
         access_token = ${token.access_token},
         token_type = ${token.token_type},
         scope = ${token.scope},
         created_at = ${token.created_at},
         registration_id = ${token.registration.id}
-      where username = ${token.username}
+      where tokens.username = ${token.username}
       returning id
     `);
 		return {
 			...token,
-			id: results.rows[0]
+			id
 		};
 	});
 }

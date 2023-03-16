@@ -13,13 +13,16 @@ create table registrations (
 
 create table tokens (
   id serial primary key,
-  username varchar unique not null,
+  username varchar not null,
 	access_token varchar not null,
 	token_type varchar,
 	scope varchar,
 	created_at int,
   registration_id int not null,
   fail_count int,
+
+  constraint uniq_username
+    unique(username),
 
   constraint fk_registration
     foreign key(registration_id) 
