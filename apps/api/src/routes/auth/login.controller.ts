@@ -1,3 +1,4 @@
+import { isInstance } from '$lib/mastodon';
 import Express from 'express';
 import type {
 	AuthCodeResponseBody,
@@ -15,14 +16,12 @@ interface CodePathParameters {
 	nonce: string;
 }
 
-const website = process.env.WEBSITE || 'http://localhost:5173';
-
 export async function redirectToAuthUrl(
 	req: Express.Request<object, LoginReponseBody | LoginErrorBody, LoginRequestBody>,
 	res: Express.Response<LoginReponseBody | LoginErrorBody>
 ) {
 	const { instanceURL } = req.body;
-	if (!instanceURL || instanceURL.length === 0) {
+	if (!instanceURL || instanceURL.length === 0 || !(await isInstance(instanceURL))) {
 		console.error(`Invalid body: ${JSON.stringify(req.body)}`);
 		return res.status(400).send({
 			error: 'Invalid request body'
