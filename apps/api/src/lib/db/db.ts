@@ -1,4 +1,13 @@
-import { createPool, DatabasePool, DatabasePoolConnection, sql } from 'slonik';
+import {
+	createMockPool,
+	createMockQueryResult,
+	createPool,
+	DatabasePool,
+	DatabasePoolConnection,
+	MockPoolOverrides,
+	QueryResultRow,
+	sql
+} from 'slonik';
 
 const url = process.env.DB_URL || 'postgres://localhost:5432/test';
 
@@ -6,6 +15,14 @@ let pool: DatabasePool;
 
 export function initializeDB() {
 	pool = createPool(url);
+}
+
+export function initializeMockDB(overrides: MockPoolOverrides) {
+	pool = createMockPool(overrides);
+}
+
+export async function closeDB() {
+	await pool.end();
 }
 
 export declare type ConnectionRoutine<T> = (connection: DatabasePoolConnection) => Promise<T>;

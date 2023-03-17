@@ -81,7 +81,7 @@ export async function findFirstTokenByInstance(instanceURL: string): Promise<Tok
 	});
 }
 
-export async function upsertToken(token: TokenModel): Promise<TokenModel> {
+export async function upsertToken(token: Omit<TokenModel, 'id'>): Promise<TokenModel> {
 	return await connect(async (connection) => {
 		const id = await connection.oneFirst<number>(sql`
       insert into tokens
@@ -91,20 +91,23 @@ export async function upsertToken(token: TokenModel): Promise<TokenModel> {
         token_type,
         scope,
         created_at,
-        registration_id
+        registration_id,
+        fail_count
       ) values (
         ${token.username},
         ${token.access_token},
         ${token.token_type},
         ${token.scope},
         ${token.created_at},
-        ${token.registration.id}
+        ${token.registration.id},
+        ${token.fail_count !== undefined ? token.fail_count : null}
       ) on conflict on constraint uniq_username do update set 
         access_token = ${token.access_token},
         token_type = ${token.token_type},
         scope = ${token.scope},
         created_at = ${token.created_at},
-        registration_id = ${token.registration.id}
+        registration_id = ${token.registration.id},
+        fail_count = ${token.fail_count !== undefined ? token.fail_count : null}
       where tokens.username = ${token.username}
       returning id
     `);
@@ -133,7 +136,8 @@ export async function updateToken(token: TokenModel): Promise<void> {
         token_type = ${token.token_type},
         scope = ${token.scope},
         created_at = ${token.created_at},
-        registration_id = ${token.registration.id}
+        registration_id = ${token.registration.id},
+        fail_count = ${token.fail_count !== undefined ? token.fail_count : null}
       where id = ${token.id}
     `);
 	});

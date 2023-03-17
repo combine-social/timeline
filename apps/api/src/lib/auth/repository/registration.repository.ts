@@ -37,10 +37,10 @@ export async function findRegistrationByNonce(nonce: string): Promise<Registrati
 }
 
 export async function createRegistration(
-	registration: RegistrationModel
+	registration: Omit<RegistrationModel, 'id'>
 ): Promise<RegistrationModel> {
 	return await connect(async (connection) => {
-		const results = await connection.query<number>(sql`
+		const id = await connection.oneFirst<number>(sql`
       insert into registrations
       (
         instance_url,
@@ -66,7 +66,7 @@ export async function createRegistration(
     `);
 		return {
 			...registration,
-			id: results.rows[0]
+			id
 		};
 	});
 }

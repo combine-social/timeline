@@ -1,6 +1,5 @@
 import { deleteToken, findAllTokens, TokenModel, updateToken } from '$lib/auth';
 import { get, set, statusKey } from '$lib/cache';
-import { getContextInfo } from '$lib/mastodon/status-id';
 import { throttledRequest } from '$lib/mastodon/throttled';
 import { send } from '$lib/queue';
 import { mastodon } from 'masto';
