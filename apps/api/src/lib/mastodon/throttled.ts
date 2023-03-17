@@ -13,6 +13,32 @@ const semaphores = new Map<string, semaphore.Semaphore>();
 /*
 	Request a resource from an instance.
 
+	This uses throttled() to ensure that rate limits are adhered to
+*/
+export function throttledRequest<T extends object>(
+	instanceURL: string,
+	requestURL: string,
+	auth?: string
+): Promise<T | null> {
+	return throttled(instanceURL, async () => {
+		const response = await fetch(requestURL, {
+			headers: {
+				...(auth ? { Authorization: auth } : {})
+			},
+			redirect: 'follow'
+		});
+		console.log(`Got response: ${response.status}`);
+		if (response.status >= 400) {
+			return null;
+		} else {
+			return await response.json();
+		}
+	});
+}
+
+/*
+	Perform a task at an instance.
+
 	To ensure that rate limits are not hit - and to leave some
 	space left over in the rate limit to the actual user,
 	request rates are throttled to one request to a given instance
@@ -23,10 +49,9 @@ const semaphores = new Map<string, semaphore.Semaphore>();
 	Setting this to one request every other second leaves plenty 
 	of room left for the human user to make requests.
 */
-export function throttledRequest<T extends object>(
+export function throttled<T extends object>(
 	instanceURL: string,
-	requestURL: string,
-	auth?: string
+	callback: () => Promise<T | null>
 ): Promise<T | null> {
 	const sem = semaphores.get(instanceURL) || semaphore(1);
 	semaphores.set(instanceURL, sem);
@@ -39,21 +64,8 @@ export function throttledRequest<T extends object>(
 			if (delay > 0) {
 				await sleep(delay);
 			}
-			console.log(`Sending request: ${requestURL} with auth: ${auth}`);
 			try {
-				const response = await fetch(requestURL, {
-					headers: {
-						...(auth ? { Authorization: auth } : {})
-					},
-					redirect: 'follow'
-				});
-				console.log(`Got response: ${response.status}`);
-				if (response.status >= 400) {
-					resolve(null);
-				} else {
-					const body = await response.json();
-					resolve(body);
-				}
+				resolve(await callback());
 			} catch (error) {
 				console.error(error);
 				resolve(null);
