@@ -53,7 +53,7 @@ async function getStatuses(
 	client: mastodon.Client,
 	since = new Date().getTime() - 1000 * 60 * 60 * 24
 ): Promise<mastodon.v1.Status[]> {
-	const statuses: mastodon.v1.Status[] = [];
+	let statuses: mastodon.v1.Status[] = [];
 	let batch: mastodon.v1.Status[] | null = [];
 	const pager = client.v1.timelines.listHome({
 		limit: 40
@@ -62,9 +62,21 @@ async function getStatuses(
 		batch = await throttled(instanceURL, async () => {
 			const result = await pager.next();
 			const page = result.value;
-			return page?.filter((status) => new Date(status.createdAt).getTime() > since) || [];
+			console.log(`Statuses page: ${JSON.stringify(page, null, 2)}`);
+			return (
+				page?.filter((status) => {
+					const diff = new Date(status.createdAt).getTime() > since;
+					console.log(
+						`createdAt: (${status.createdAt} => ${new Date(status.createdAt)}), diff: ${
+							new Date(status.createdAt).getTime() - since
+						}, include? ${diff}`
+					);
+					return diff;
+				}) || []
+			);
 		});
-		statuses.concat(batch || []);
+		console.log(`Got batch length: ${batch?.length}`);
+		statuses = statuses.concat(batch || []);
 	} while (batch?.length || 0 > 0);
 	return statuses;
 }
