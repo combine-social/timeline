@@ -1,5 +1,6 @@
 import { RedisClientType } from '@redis/client';
 import { createClient } from 'redis';
+import { MockRedisClient } from './mock';
 
 let client: RedisClientType;
 
@@ -8,7 +9,7 @@ let client: RedisClientType;
 	It is set by POLL_INTERVAL environment variable or defaults
 	to every 15 minutes.
 */
-const expire_time = parseInt(process.env.POLL_INTERVAL || '0') || 60 * 16;
+const expire_time = parseInt(process.env.POLL_INTERVAL || '0') || 60 * 15;
 
 export async function initializeCache() {
 	client = createClient({
@@ -23,6 +24,10 @@ export async function initializeCache() {
 		}, 5000);
 	});
 	await client.connect();
+}
+
+export async function initializeMockCache() {
+	client = new MockRedisClient() as unknown as RedisClientType;
 }
 
 export async function get<T>(key: string): Promise<T | null> {
