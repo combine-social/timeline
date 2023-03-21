@@ -51,18 +51,20 @@ export function throttledRequest<T extends object>(
 */
 export function throttled<T extends object>(
 	instanceURL: string,
-	callback: () => Promise<T | null>
+	callback: () => Promise<T | null>,
+	requestsPerMinute = 30
 ): Promise<T | null> {
+	const delay = 60_000 / requestsPerMinute;
 	const sem = semaphores.get(instanceURL) || semaphore(1);
 	semaphores.set(instanceURL, sem);
 	return new Promise<T | null>((resolve) => {
 		sem.take(async () => {
 			const now = new Date().getTime(); // current time in millis
 			const latest: number = (await get(instanceKey(instanceURL))) || 0; // time of last request in millis
-			const delay = Math.max(2000 - (now - latest), 0); // delay = 2 seconds - time since last request
-			console.log(`Throttle delay: ${delay}`);
-			if (delay > 0) {
-				await sleep(delay);
+			const waitTime = Math.max(delay - (now - latest), 0);
+			console.log(`Throttle delay: ${waitTime}`);
+			if (waitTime > 0) {
+				await sleep(waitTime);
 			}
 			try {
 				resolve(await callback());

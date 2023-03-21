@@ -22,16 +22,27 @@ describe('throttled', () => {
 		const func = jest.fn(getDate);
 		let first = new Date(),
 			second = new Date();
-		throttled(instanceURL, async () => {
-			first = func();
-			return null;
-		});
-		throttled(instanceURL, async () => {
-			second = func();
-			return null;
-		});
-		await sleep(2100);
+		const requestsPerMinute = 600;
+		const minimumDelay = 60_000 / requestsPerMinute - 100;
+		const safeWaitTime = minimumDelay + 200;
+		throttled(
+			instanceURL,
+			async () => {
+				first = func();
+				return null;
+			},
+			requestsPerMinute
+		);
+		throttled(
+			instanceURL,
+			async () => {
+				second = func();
+				return null;
+			},
+			requestsPerMinute
+		);
+		await sleep(safeWaitTime);
 		expect(func).toBeCalledTimes(2);
-		expect(second.getTime() - first.getTime()).toBeGreaterThan(1900);
+		expect(second.getTime() - first.getTime()).toBeGreaterThan(minimumDelay);
 	});
 });
