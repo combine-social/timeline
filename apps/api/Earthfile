@@ -9,7 +9,7 @@ all:
     "node", \
     "-r", "ts-node/register", \
     "-r", "tsconfig-paths/register", \
-    "--max-old-space-size=64", \
+    "--max-old-space-size=256", \
     "/app/apps/api/dist/main.js" \
   ]
   SAVE IMAGE cyborch/toottail-api:latest
