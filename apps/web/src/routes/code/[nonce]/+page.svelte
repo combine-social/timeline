@@ -12,5 +12,9 @@
 </script>
 
 <template>
-	<p />
+	<h1>Authorising</h1>
+	<p>Authorising and starting to pull in context for messages in you home timeline.</p>
+	<p>This might take a few seconds.</p>
 </template>
+
+<style src="./code.css"></style>
