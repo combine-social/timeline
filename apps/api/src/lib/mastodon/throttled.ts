@@ -1,13 +1,7 @@
 import { get, instanceKey, set } from '$lib/cache';
-import { estimatedQueueLatency } from '$lib/conditional-queue';
+import { sleep } from '$lib/sleep';
 import fetch from 'node-fetch';
 import semaphore from 'semaphore';
-
-async function sleep(millis: number): Promise<void> {
-	return new Promise((resolve) => {
-		setTimeout(resolve, millis);
-	});
-}
 
 const semaphores = new Map<string, semaphore.Semaphore>();
 
