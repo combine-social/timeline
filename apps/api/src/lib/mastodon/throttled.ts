@@ -1,4 +1,5 @@
 import { get, instanceKey, set } from '$lib/cache';
+import { estimatedQueueLatency } from '$lib/conditional-queue';
 import fetch from 'node-fetch';
 import semaphore from 'semaphore';
 
@@ -39,15 +40,14 @@ export function throttledRequest<T extends object>(
 /*
 	Perform a task at an instance.
 
-	To ensure that rate limits are not hit - and to leave some
-	space left over in the rate limit to the actual user,
-	request rates are throttled to one request to a given instance
-	every other seconds.
+	To ensure that rate limits are not hit, request rates are
+	throttled to one request to a given instance 30 times
+	per minute - just under the rate limit.
 
 	Rate limits are set to 300 requests per 5 minutes, meaning
 	maximum one request per second (per ip and per user).
-	Setting this to one request every other second leaves plenty 
-	of room left for the human user to make requests.
+
+	Setting this to 30 requests per minute keeps it just under the limit.
 */
 export function throttled<T extends object>(
 	instanceURL: string,
@@ -72,7 +72,7 @@ export function throttled<T extends object>(
 				console.error(error);
 				resolve(null);
 			} finally {
-				await set(instanceKey(instanceURL), new Date().getTime());
+				await set(instanceKey(instanceURL), new Date().getTime(), 300);
 				sem.leave();
 			}
 		});

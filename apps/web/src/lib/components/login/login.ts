@@ -1,6 +1,25 @@
+import { login as getClient } from 'masto';
 import type { LoginReponseBody, LoginRequestBody } from 'types';
 
-export async function login(instanceURL: string) {
+async function verifiedInstanceName(instance: string): Promise<string | null> {
+	try {
+		const url = new URL(instance.startsWith('http') ? instance : `https://${instance}`);
+		const hostname = url.hostname;
+		const client = await getClient({
+			url: url.toString(),
+			disableDeprecatedWarning: true
+		});
+		const response = await client.v2.instance.fetch();
+		return response.domain === hostname ? hostname : null;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+}
+
+export async function loginOrReturnError(instance: string): Promise<string | null> {
+	const instanceURL = await verifiedInstanceName(instance);
+	if (!instanceURL) return `${instance} is not a valid mastodon instance`;
 	const body: LoginRequestBody = {
 		instanceURL
 	};
@@ -15,4 +34,5 @@ export async function login(instanceURL: string) {
 	});
 	const result: LoginReponseBody = await response.json();
 	document.location.href = result.authURL;
+	return null;
 }

@@ -1,7 +1,8 @@
 import { deleteToken, findAllTokens, TokenModel, updateToken } from '$lib/auth';
-import { get, set, statusKey } from '$lib/cache';
+import { deleteKeysWithPrefix, statusKey } from '$lib/cache';
+import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
-import { send } from '$lib/queue';
+import { queueSize } from '$lib/queue';
 import { login, mastodon } from 'masto';
 
 /*
@@ -10,6 +11,8 @@ import { login, mastodon } from 'masto';
   revoked and delete it.
 */
 const max_fail_count = 60 * 5;
+
+const home_limit = 150;
 
 export async function getAllHomes(): Promise<void> {
 	// prettier-ignore
@@ -51,7 +54,8 @@ async function verifiedClient(token: TokenModel): Promise<mastodon.Client | null
 async function getStatuses(
 	instanceURL: string,
 	client: mastodon.Client,
-	since = new Date().getTime() - 1000 * 60 * 60 * 24
+	since = new Date().getTime() - 1000 * 60 * 60 * 24,
+	limit = home_limit
 ): Promise<mastodon.v1.Status[]> {
 	let statuses: mastodon.v1.Status[] = [];
 	let batch: mastodon.v1.Status[] | null = [];
@@ -60,25 +64,30 @@ async function getStatuses(
 	});
 	do {
 		batch = await throttled(instanceURL, async () => {
-			const result = await pager.next();
-			const page = result.value;
-			console.log(`Statuses page: ${JSON.stringify(page, null, 2)}`);
-			return (
-				page?.filter((status) => {
-					const diff = new Date(status.createdAt).getTime() > since;
-					console.log(
-						`createdAt: (${status.createdAt} => ${new Date(status.createdAt)}), diff: ${
-							new Date(status.createdAt).getTime() - since
-						}, include? ${diff}`
-					);
-					return diff;
-				}) || []
-			);
+			try {
+				const result = await pager.next();
+				const page = result.value;
+				console.log(`Statuses page: ${JSON.stringify(page, null, 2)}`);
+				return (
+					page?.filter((status) => {
+						const diff = new Date(status.createdAt).getTime() > since;
+						console.log(
+							`createdAt: (${status.createdAt} => ${new Date(status.createdAt)}), diff: ${
+								new Date(status.createdAt).getTime() - since
+							}, include? ${diff}`
+						);
+						return diff;
+					}) || []
+				);
+			} catch (error) {
+				console.error(`[getStatuses] error: ${error}`);
+				return [];
+			}
 		});
 		console.log(`Got batch length: ${batch?.length}`);
 		statuses = statuses.concat(batch || []);
-	} while (batch?.length || 0 > 0);
-	return statuses;
+	} while ((statuses.length < limit && batch?.length) || 0 > 0);
+	return statuses.slice(0, limit);
 }
 
 /*
@@ -90,6 +99,13 @@ export async function getHome(
 	token: TokenModel,
 	since = new Date().getTime() - 1000 * 60 * 60 * 24
 ): Promise<void> {
+	const queue = token.registration.instance_url;
+
+	const count = await queueSize(queue);
+	if (count > 0) return;
+
+	await deleteKeysWithPrefix(queue);
+
 	const client = await verifiedClient(token);
 	if (!client) return;
 
@@ -102,21 +118,17 @@ export async function getHome(
 			console.log(`No url for status ${status.id}, skipping`);
 			continue;
 		}
-		// prettier-ignore
-		if (await get(
-			statusKey(
-				token.registration.instance_url,
-				status.url)
-			)
-		) {
-			console.log(`Found ${status.url} from home in cache, skipping`);
-			continue; // skip this status if it has recently been fetched
-		}
-		console.log(`Adding ${status.url} to queue: ${token.registration.instance_url}`);
-		await set(statusKey(token.registration.instance_url, status.url), true);
-		await send(token.registration.instance_url, {
-			instanceURL: token.registration.instance_url,
-			statusURL: status.url
-		});
+		console.log(`Maybe adding ${status.url} to queue: ${token.registration.instance_url}`);
+		await sendIfNotCached(
+			statusKey(token.registration.instance_url, status.url),
+			token.registration.instance_url,
+			status.url,
+			{
+				original: status.url,
+				createdAt: status.createdAt,
+				index: statuses.indexOf(status),
+				level: 1
+			}
+		);
 	}
 }

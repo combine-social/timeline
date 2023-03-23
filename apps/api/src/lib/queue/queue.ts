@@ -1,4 +1,7 @@
 import amqplib from 'amqplib';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import mockAmqplib from 'mock-amqplib';
 
 const url = process.env.QUEUE_URL || 'amqp://localhost';
 
@@ -8,6 +11,11 @@ let connection: amqplib.Connection;
 export async function initializeQueue() {
 	connection = await amqplib.connect(url);
 	channel = await connection.createChannel();
+}
+
+export async function initializeMockQueue() {
+	amqplib.connect = mockAmqplib.connect;
+	await initializeQueue();
 }
 
 export async function next<T extends object>(queue: string): Promise<T | null> {
@@ -22,4 +30,10 @@ export async function next<T extends object>(queue: string): Promise<T | null> {
 export async function send(queue: string, message: object) {
 	await channel.assertQueue(queue);
 	await channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+}
+
+export async function queueSize(queue: string) {
+	const assert = await channel.assertQueue(queue);
+	console.log(`assert: ${JSON.stringify(assert)}`);
+	return assert.messageCount;
 }

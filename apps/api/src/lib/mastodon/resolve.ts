@@ -22,7 +22,8 @@ export async function getContext(
 		`${token.token_type} ${token.access_token}`
 	);
 	console.log(`Found ${search?.statuses?.length} statuses from search: ${searchURL}`);
-	const resultURL = search?.statuses.shift()?.url;
+	const status = search?.statuses.shift();
+	const resultURL = status?.url;
 	if (!resultURL) return emptyContext();
 	const context = getContextInfo(resultURL);
 	console.log(`Result context url: ${context?.statusURL}`);

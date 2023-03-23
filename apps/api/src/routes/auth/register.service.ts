@@ -64,13 +64,6 @@ export async function authenticate(nonce: string, code: string): Promise<string 
 	const username = await getUsername(dto, registration.instance_url);
 	const model = tokenDtoToModel(dto, registration, username);
 	const token = await upsertToken(model);
-
-	/*
-	Fetch home timeline immediately, and return results.
-	This should lead to a better UX where new users won't have to wait
-	as long before they see replies start to show up, and also verify
-	that the authentication actually succeeded.
-	*/
-	await getHome(token);
-	return token.fail_count === 0 ? username : undefined;
+	getHome(token).then().catch();
+	return username;
 }

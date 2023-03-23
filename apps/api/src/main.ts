@@ -16,12 +16,14 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 initializeDB();
-initializeQueue();
-initializeCache();
 (async () => {
 	try {
 		await ping();
 		console.log(`⚡️[server]: DB connection up!`);
+		await initializeQueue();
+		console.log(`⚡️[server]: Queue connection up!`);
+		await initializeCache();
+		console.log(`⚡️[server]: Cache connection up!`);
 		loop();
 	} catch (error) {
 		console.error(`✖︎ [server]: DB connection failed: ${error}`);

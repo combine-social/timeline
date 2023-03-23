@@ -3,8 +3,8 @@
 </script>
 
 <template>
-	<h1>Mastodon Post Context</h1>
-	<h2>Fix reply count in your home timeline.</h2>
+	<h1>Combine Social</h1>
+	<h2>Combine remote and local timelines</h2>
 	<div class="content">
 		<p>
 			Mastodon has a known issue with federation, which results in some replies to remote messages
@@ -13,7 +13,7 @@
 		<p>There is a solution to this, and it's a really easy one:</p>
 		<ol>
 			<li>Enter your mastodon instance name.</li>
-			<li>Authorise the Post Context application.</li>
+			<li>Authorise this application.</li>
 			<li>There is no step 3!</li>
 		</ol>
 		<Login />
