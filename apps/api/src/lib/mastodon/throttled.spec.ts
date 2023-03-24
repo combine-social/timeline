@@ -1,5 +1,5 @@
 import { initializeMockCache } from '$lib/cache';
-import { initializeMockQueue } from '$lib/queue';
+import { initializeMockQueue } from '$lib/queue/queue.spec';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { throttled } from './throttled';
 
