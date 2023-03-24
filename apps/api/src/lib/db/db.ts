@@ -1,11 +1,9 @@
 import {
 	createMockPool,
-	createMockQueryResult,
 	createPool,
 	DatabasePool,
 	DatabasePoolConnection,
 	MockPoolOverrides,
-	QueryResultRow,
 	sql
 } from 'slonik';
 

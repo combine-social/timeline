@@ -1,1 +1,1 @@
-export { estimatedQueueLatency, sendIfNotCached } from './queue';
+export { sendIfNotCached } from './queue';

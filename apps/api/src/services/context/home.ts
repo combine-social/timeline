@@ -3,7 +3,6 @@ import { deleteKeysWithPrefix, statusKey } from '$lib/cache';
 import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
 import { queueSize } from '$lib/queue';
-import { sleep } from '$lib/sleep';
 import { login, mastodon } from 'masto';
 
 /*
@@ -107,7 +106,6 @@ export async function getHome(
 	if (count > threshold) return;
 
 	await deleteKeysWithPrefix(queue);
-	await sleep(5000);
 
 	const client = await verifiedClient(token);
 	if (!client) return;
