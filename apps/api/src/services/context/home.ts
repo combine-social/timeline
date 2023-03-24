@@ -3,6 +3,7 @@ import { deleteKeysWithPrefix, statusKey } from '$lib/cache';
 import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
 import { queueSize } from '$lib/queue';
+import { sleep } from '$lib/sleep';
 import { login, mastodon } from 'masto';
 
 /*
@@ -97,14 +98,16 @@ async function getStatuses(
 */
 export async function getHome(
 	token: TokenModel,
-	since = new Date().getTime() - 1000 * 60 * 60 * 24
+	since = new Date().getTime() - 1000 * 60 * 60 * 24,
+	threshold = 10
 ): Promise<void> {
 	const queue = token.registration.instance_url;
 
 	const count = await queueSize(queue);
-	if (count > 0) return;
+	if (count > threshold) return;
 
 	await deleteKeysWithPrefix(queue);
+	await sleep(5000);
 
 	const client = await verifiedClient(token);
 	if (!client) return;
