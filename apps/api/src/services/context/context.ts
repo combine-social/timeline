@@ -2,14 +2,7 @@ import { get, set, statusKey } from '$lib/cache';
 import { getContext } from '$lib/mastodon';
 import { next } from '$lib/queue';
 import { ContextRequest } from '$lib/mastodon';
-import { sendIfNotCached } from '$lib/conditional-queue';
-
-interface StatusCacheMetaData {
-	original: string;
-	createdAt?: string;
-	index?: number;
-	level: number;
-}
+import { sendIfNotCached, StatusCacheMetaData } from '$lib/conditional-queue';
 
 export async function getNextContext(instance: string): Promise<void> {
 	try {

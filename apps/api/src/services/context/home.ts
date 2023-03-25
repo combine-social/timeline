@@ -1,55 +1,12 @@
-import { deleteToken, findAllTokens, TokenModel, updateToken } from '$lib/auth';
+import { TokenModel } from '$lib/auth';
 import { deleteKeysWithPrefix, statusKey } from '$lib/cache';
 import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
 import { queueSize } from '$lib/queue';
-import { login, mastodon } from 'masto';
-
-/*
-  If requests with a token fails for more than 10 minutes
-  (1 request every 2 seconds) then assume that it has been
-  revoked and delete it.
-*/
-const max_fail_count = 60 * 5;
+import { mastodon } from 'masto';
+import { verifiedClient } from './client';
 
 const home_limit = 150;
-
-export async function getAllHomes(): Promise<void> {
-	// prettier-ignore
-	await Promise.all([
-    (await findAllTokens()) // find all auth tokens
-      .map((token) => getHome(token)) // get home timeline for each
-  ])
-}
-
-async function verifiedClient(token: TokenModel): Promise<mastodon.Client | null> {
-	const client = await login({
-		url: `https://${token.registration.instance_url}`,
-		accessToken: token.access_token,
-		disableVersionCheck: true,
-		disableDeprecatedWarning: true
-	});
-	try {
-		const account = await client.v1.accounts.verifyCredentials();
-		if (!account.id || account.suspended) {
-			throw 'unauthorized';
-		}
-		token.fail_count = 0;
-		await updateToken(token);
-		return client;
-	} catch {
-		const failures = (token.fail_count || 0) + 1;
-		console.error(`Failed getting status, attempt no: ${failures}`);
-		if (failures > max_fail_count) {
-			await deleteToken(token.id);
-			return null;
-		} else {
-			token.fail_count = failures;
-			await updateToken(token);
-			return client;
-		}
-	}
-}
 
 async function getStatuses(
 	instanceURL: string,
@@ -97,16 +54,8 @@ async function getStatuses(
 */
 export async function getHome(
 	token: TokenModel,
-	since = new Date().getTime() - 1000 * 60 * 60 * 24,
-	threshold = 10
+	since = new Date().getTime() - 1000 * 60 * 60 * 24
 ): Promise<void> {
-	const queue = token.registration.instance_url;
-
-	const count = await queueSize(queue);
-	if (count > threshold) return;
-
-	await deleteKeysWithPrefix(queue);
-
 	const client = await verifiedClient(token);
 	if (!client) return;
 

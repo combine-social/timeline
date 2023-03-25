@@ -13,16 +13,17 @@ const semaphores = new Map<string, semaphore.Semaphore>();
 export function throttledRequest<T extends object>(
 	instanceURL: string,
 	requestURL: string,
-	auth?: string
+	auth?: string,
+	extraHeaders?: object
 ): Promise<T | null> {
 	return throttled(instanceURL, async () => {
 		const response = await fetch(requestURL, {
 			headers: {
-				...(auth ? { Authorization: auth } : {})
+				...(auth ? { Authorization: auth } : {}),
+				...(extraHeaders || {})
 			},
 			redirect: 'follow'
 		});
-		console.log(`Got response: ${response.status}`);
 		if (response.status >= 400) {
 			return null;
 		} else {
