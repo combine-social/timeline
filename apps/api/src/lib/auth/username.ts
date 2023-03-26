@@ -5,6 +5,7 @@ export async function getUsername(token: TokenDTO, instanceURL: string): Promise
 	const client = await login({
 		url: `https://${instanceURL}`,
 		accessToken: token.access_token,
+		disableDeprecatedWarning: true,
 		disableVersionCheck: true,
 		timeout: 30_000
 	});

@@ -7,7 +7,8 @@ async function verifiedInstanceName(instance: string): Promise<string | null> {
 		const hostname = url.hostname;
 		const client = await getClient({
 			url: url.toString(),
-			disableDeprecatedWarning: true
+			disableDeprecatedWarning: true,
+			disableVersionCheck: true
 		});
 		const response = await client.v2.instance.fetch();
 		return response.domain === hostname ? hostname : null;
