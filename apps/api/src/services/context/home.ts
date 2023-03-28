@@ -2,7 +2,6 @@ import { TokenModel } from '$lib/auth';
 import { deleteKeysWithPrefix, statusKey } from '$lib/cache';
 import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
-import { queueSize } from '$lib/queue';
 import { mastodon } from 'masto';
 import { verifiedClient } from './client';
 
