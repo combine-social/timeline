@@ -56,6 +56,7 @@ export async function getHome(
 	token: TokenModel,
 	since = new Date().getTime() - 1000 * 60 * 60 * 24
 ): Promise<void> {
+	const queue = token.username;
 	const client = await verifiedClient(token);
 	if (!client) return;
 
@@ -70,6 +71,7 @@ export async function getHome(
 		}
 		console.log(`Maybe adding ${status.url} to queue: ${token.registration.instance_url}`);
 		await sendIfNotCached(
+			queue,
 			statusKey(token.registration.instance_url, status.url),
 			token.registration.instance_url,
 			status.url,

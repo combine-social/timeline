@@ -3,12 +3,15 @@ import { getContext } from '$lib/mastodon';
 import { next } from '$lib/queue';
 import { ContextRequest } from '$lib/mastodon';
 import { sendIfNotCached, StatusCacheMetaData } from '$lib/conditional-queue';
+import { TokenModel } from '$lib/auth';
 
-export async function getNextContext(instance: string): Promise<void> {
+export async function getNextContext(token: TokenModel): Promise<void> {
 	try {
-		const request = await next<ContextRequest>(instance);
+		const instance = token.registration.instance_url;
+		const queue = token.username;
+		const request = await next<ContextRequest>(queue);
 		if (!request) {
-			console.log(`${instance} queue is empty`);
+			console.log(`${queue} queue is empty`);
 			return;
 		}
 		console.log(`Got ${JSON.stringify(request)} from queue: ${instance}`);
@@ -29,7 +32,7 @@ export async function getNextContext(instance: string): Promise<void> {
 			if (relative.reblog) relative = relative.reblog;
 			if (!relative.url) continue;
 			console.log(`Maybe adding ${relative.url} to queue`);
-			sendIfNotCached(statusKey(instance, relative.url), instance, relative.url, {
+			sendIfNotCached(queue, statusKey(instance, relative.url), instance, relative.url, {
 				original: meta.original,
 				index: meta.index,
 				createdAt: relative.createdAt,

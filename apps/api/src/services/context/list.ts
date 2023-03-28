@@ -1,5 +1,5 @@
-import { findAllRegistrations } from '$lib/auth';
+import { findAllTokens, TokenModel } from '$lib/auth';
 
-export async function getInstances(): Promise<string[]> {
-	return (await findAllRegistrations()).map((reg) => reg.instance_url);
+export async function getTokens(): Promise<TokenModel[]> {
+	return await findAllTokens();
 }

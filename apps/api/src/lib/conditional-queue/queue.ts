@@ -10,6 +10,7 @@ import { StatusCacheMetaData } from './meta.model';
 	for the given task.
 */
 export async function sendIfNotCached(
+	queue: string,
 	key: string,
 	instance: string,
 	url: string,
@@ -17,7 +18,7 @@ export async function sendIfNotCached(
 ) {
 	if (!(await get(key))) {
 		await set(key, value, 0);
-		await send(instance, {
+		await send(queue, {
 			instanceURL: instance,
 			statusURL: url
 		});

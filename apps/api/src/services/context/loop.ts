@@ -3,7 +3,7 @@ import { deleteKeysWithPrefix } from '$lib/cache';
 import { queueSize } from '$lib/queue';
 import { getNextContext } from './context';
 import { getHome } from './home';
-import { getInstances } from './list';
+import { getTokens } from './list';
 import { getNotifications } from './notification';
 
 /*
@@ -16,9 +16,9 @@ const expire_time = parseInt(process.env.POLL_INTERVAL || '0') || 60 * 5;
 async function pollQueue() {
 	// prettier-ignore
 	await Promise.all([
-    (await getInstances()) // each instance is also a queue, for each instance
-      .map((instance) => getNextContext(instance)) // get the next context
-  ]);
+		(await getTokens()) // each instance is also a queue, for each instance
+			.map((token) => getNextContext(token)) // get the next context
+	]);
 }
 
 function loopTokens() {

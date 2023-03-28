@@ -19,6 +19,7 @@ export async function getNotifications(
 	token: TokenModel,
 	since = new Date().getTime() - 1000 * 60 * 60 * 24
 ): Promise<void> {
+	const queue = token.username;
 	const instance = token.registration.instance_url;
 
 	const client = await verifiedClient(token);
@@ -28,7 +29,7 @@ export async function getNotifications(
 	for (const account of accounts) {
 		const statuses = await getRecentStatusesForAccount(account, since);
 		for (const status of statuses) {
-			await sendIfNotCached(statusKey(instance, status.url), instance, status.url, {
+			await sendIfNotCached(queue, statusKey(instance, status.url), instance, status.url, {
 				original: status.url,
 				createdAt: status.published,
 				index: statuses.indexOf(status),
