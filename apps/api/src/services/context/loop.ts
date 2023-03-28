@@ -66,8 +66,8 @@ async function processAllTokens(): Promise<void> {
 	Clears the cache so queue can be repopulated,
 	if the current queue length is less than the given threshold.
 */
-async function preparePopulateQueue(token: TokenModel, threshold = 10): Promise<boolean> {
-	const queue = token.registration.instance_url;
+async function preparePopulateQueue(token: TokenModel, threshold = 25): Promise<boolean> {
+	const queue = token.username;
 
 	const count = await queueSize(queue);
 	console.log(`Size of queue ${queue} is ${count}, skip threshold is ${threshold}.`);
