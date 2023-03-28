@@ -17,10 +17,13 @@ export async function sendIfNotCached(
 	value: StatusCacheMetaData
 ) {
 	if (!(await get(key))) {
+		console.log(`Queueing ${key}`);
 		await set(key, value, 0);
 		await send(queue, {
 			instanceURL: instance,
 			statusURL: url
 		});
+	} else {
+		console.log(`Skipping ${key}`);
 	}
 }

@@ -70,7 +70,12 @@ async function preparePopulateQueue(token: TokenModel, threshold = 10): Promise<
 	const queue = token.registration.instance_url;
 
 	const count = await queueSize(queue);
-	if (count > threshold) return false;
+	console.log(`Size of queue ${queue} is ${count}, skip threshold is ${threshold}.`);
+	if (count > threshold) {
+		console.log(`Skipping queue ${queue}`);
+		return false;
+	}
+	console.log(`Proceeding with queue ${queue}`);
 
 	await deleteKeysWithPrefix(queue);
 	return true;
