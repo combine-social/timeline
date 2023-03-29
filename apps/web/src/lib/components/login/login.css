@@ -10,7 +10,7 @@ input {
 input[type="submit"] {
   background-color: rgb(99, 100, 235);
   border: none;
-  color: var(--light-color);
+  color: white;
   font-weight: bolder;
   padding: 12px 40px;
   text-decoration: none;
@@ -24,7 +24,7 @@ input[type="submit"]:hover {
 }
 
 input[type="text"] {
-  background-color: var(--light-color);
+  background-color: white;
   border: none;
   color: black;
   padding: 10px;
