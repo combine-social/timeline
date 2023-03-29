@@ -20,7 +20,7 @@ export async function getNextContext(token: TokenModel): Promise<void> {
 			level: 1
 		};
 		await set(statusKey(instance, request.statusURL), meta);
-		if (meta.level > 3) {
+		if (meta.level > 2) {
 			console.log(`Recursion too deep for child of ${meta.original}, bailing.`);
 			return;
 		}
