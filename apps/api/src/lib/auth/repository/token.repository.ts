@@ -59,28 +59,6 @@ export async function findTokenById(id: number): Promise<TokenModel | null> {
 	});
 }
 
-export async function findFirstTokenByInstance(instanceURL: string): Promise<TokenModel | null> {
-	return await connect(async (connection) => {
-		const row = await connection.maybeOne<TokenRow>(sql`
-      select 
-        to_json(r.*) as registration,
-        to_json(t.*) as token
-      from registrations r 
-      join tokens t 
-        on r.id = t.registration_id
-      where r.instance_url = ${instanceURL}
-      limit 1
-    `);
-		if (!row) return null;
-		const token = row.token;
-		delete token.registration_id;
-		return {
-			...token,
-			registration: row.registration
-		};
-	});
-}
-
 export async function upsertToken(token: Omit<TokenModel, 'id'>): Promise<TokenModel> {
 	return await connect(async (connection) => {
 		const id = await connection.oneFirst<number>(sql`

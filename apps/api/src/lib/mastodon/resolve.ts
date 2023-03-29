@@ -1,4 +1,4 @@
-import { findFirstTokenByInstance } from '$lib/auth';
+import { TokenModel } from '$lib/auth';
 import type { mastodon } from 'masto';
 import { getContextInfo } from './status-id';
 import { throttledRequest } from './throttled';
@@ -7,13 +7,13 @@ import { throttledRequest } from './throttled';
 	Resolve a remote status and fetch context for it.
 */
 export async function getContext(
-	instanceURL: string,
+	token: TokenModel,
 	statusURL: string
 ): Promise<mastodon.v1.Context> {
+	const instanceURL = token.registration.instance_url;
 	const searchURL = `https://${instanceURL}/api/v2/search?q=${encodeURIComponent(
 		statusURL
 	)}&resolve=true&limit=1&type=statuses`;
-	const token = await findFirstTokenByInstance(instanceURL);
 	console.log(`Instance ${instanceURL} matches token: ${token?.id}`);
 	if (!token) return emptyContext();
 	const search = await throttledRequest<mastodon.v1.Search>(

@@ -24,7 +24,7 @@ export async function getNextContext(token: TokenModel): Promise<void> {
 			console.log(`Recursion too deep for child of ${meta.original}, bailing.`);
 			return;
 		}
-		const context = await getContext(instance, request.statusURL);
+		const context = await getContext(token, request.statusURL);
 		console.log(
 			`Got ${context.descendants.length} descendants of ${request.statusURL} from ${meta.createdAt} at index ${meta.index}`
 		);
