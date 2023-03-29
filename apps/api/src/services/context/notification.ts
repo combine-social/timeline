@@ -115,12 +115,18 @@ async function getRecentStatusesForAccount(
 }
 
 export function getStatusURLsFromOutboxPage(page: OutboxPage, since: number): OrderedItemObject[] {
-	return (
-		page.orderedItems
-			.filter((item) => new Date(item.published).getTime() > since)
-			.filter((item) => item.type === 'Create')
-			.filter((item) => item.object.type === 'Note')
-			.filter((item) => !!item.object.url)
-			.map((item) => item.object) || []
-	);
+	try {
+		return (
+			page.orderedItems
+				.filter((item) => new Date(item.published).getTime() > since)
+				.filter((item) => item.type === 'Create')
+				.filter((item) => item.object.type === 'Note')
+				.filter((item) => !!item.object.url)
+				.map((item) => item.object) || []
+		);
+	} catch (error) {
+		console.error(`Failed getting orderedItems from page: ${error}`);
+		console.error(page);
+		return [];
+	}
 }
