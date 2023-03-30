@@ -16,20 +16,30 @@ export function throttledRequest<T extends object>(
 	auth?: string,
 	extraHeaders?: object
 ): Promise<T | null> {
-	return throttled(instanceURL, async () => {
-		const response = await fetch(requestURL, {
-			headers: {
-				...(auth ? { Authorization: auth } : {}),
-				...(extraHeaders || {})
-			},
-			redirect: 'follow'
-		});
-		if (response.status >= 400) {
-			return null;
-		} else {
-			return await response.json();
-		}
-	});
+	/*
+		Per-IP rate limit is set to 7500 reqs per 5 minutes.
+		Per user rate limit is set to 300 per 5 minutes.
+		Setting requests per minute to half of that to be safe.
+	*/
+	const requestsPerMinute = auth ? 30 : 750;
+	return throttled(
+		instanceURL,
+		async () => {
+			const response = await fetch(requestURL, {
+				headers: {
+					...(auth ? { Authorization: auth } : {}),
+					...(extraHeaders || {})
+				},
+				redirect: 'follow'
+			});
+			if (response.status >= 400) {
+				return null;
+			} else {
+				return await response.json();
+			}
+		},
+		requestsPerMinute
+	);
 }
 
 /*
