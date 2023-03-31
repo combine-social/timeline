@@ -1,11 +1,11 @@
 import { TokenModel } from '$lib/auth';
-import { deleteKeysWithPrefix, statusKey } from '$lib/cache';
+import { statusKey } from '$lib/cache';
 import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
 import { mastodon } from 'masto';
 import { verifiedClient } from './client';
 
-const home_limit = 150;
+const home_limit = 75;
 
 async function getStatuses(
 	instanceURL: string,
