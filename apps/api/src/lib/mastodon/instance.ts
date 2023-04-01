@@ -9,7 +9,7 @@ export async function isInstance(instanceURL: string): Promise<boolean> {
 			timeout: 5000
 		});
 		const instance = await client.v2.instance.fetch();
-		return instance.domain === instanceURL;
+		return parseInt(instance.version) >= 4;
 	} catch {
 		return false;
 	}

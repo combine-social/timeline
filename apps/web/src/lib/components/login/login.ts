@@ -11,7 +11,7 @@ async function verifiedInstanceName(instance: string): Promise<string | null> {
 			disableVersionCheck: true
 		});
 		const response = await client.v2.instance.fetch();
-		return response.domain === hostname ? hostname : null;
+		return parseInt(response.version) >= 4 ? hostname : null;
 	} catch (error) {
 		console.error(error);
 		return null;
@@ -19,6 +19,7 @@ async function verifiedInstanceName(instance: string): Promise<string | null> {
 }
 
 export async function loginOrReturnError(instance: string): Promise<string | null> {
+	if (!instance) return 'enter a mastodon instance name';
 	const instanceURL = await verifiedInstanceName(instance);
 	if (!instanceURL) return `${instance} is not a valid mastodon instance`;
 	const body: LoginRequestBody = {
