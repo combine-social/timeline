@@ -1,0 +1,96 @@
+version: "3.9"
+services:
+  api:
+    image: node:19
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/app"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo "Installing dependencies, migrating and starting api..."
+        cd /app
+        npm install
+        POSTGRES_CONNECTION_STRING=postgresql://root:test@db:5432/test npm -w apps/api run migrate up
+        npm -w apps/api run start
+    environment:
+      - WEBSITE=http://localhost:8080
+      - REDIS_URL=redis://redis
+      - DB_URL=postgresql://root:test@db:5432/test
+      - QUEUE_URL=amqp://rabbitmq
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+
+  web:
+    image: node:19
+    ports:
+      - "5173:5173"
+    volumes:
+      - ".:/app"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo "Installing dependencies and starting web..."
+        cd /app
+        npm install
+        npm -w apps/web run start -- --host
+
+  redis:
+    image: "redis:alpine"
+
+  db:
+    image: "postgres:14.2-alpine"
+    environment:
+     - POSTGRES_HOST_AUTH_METHOD=trust
+     - POSTGRES_USER=root
+     - POSTGRES_PASSWORD=test
+     - POSTGRES_DB=test
+    ports:
+      - "5432:5432"
+
+  rabbitmq:
+    image: "rabbitmq:3.11-management-alpine"
+    ports:
+      - "15672:15672"
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+      - web
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cat > /etc/nginx/nginx.conf <<EOF
+          daemon off;
+          user www-data;
+          events {
+
+          }
+          http {
+            upstream webbackend {
+              server web:5173 fail_timeout=20s max_fails=5;
+            }
+            upstream apibackend {
+              server api:3000 fail_timeout=20s max_fails=5;
+            }
+            server {
+              listen 8080;
+              location / {
+                proxy_pass http://webbackend;
+              }
+              location /api {
+                proxy_pass http://apibackend;
+              }
+            }
+          }
+        EOF
+        nginx
