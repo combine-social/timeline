@@ -12,4 +12,4 @@ all:
     "--max-old-space-size=128", \
     "/app/apps/web/dist/index.js" \
   ]
-  SAVE IMAGE cyborch/toottail-web:latest
+  SAVE IMAGE cyborch/toottail-web:1.0.0
