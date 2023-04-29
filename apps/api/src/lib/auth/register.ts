@@ -21,9 +21,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 */
 
 import fetch from 'node-fetch';
-import type { RegistrationDTO } from './dto/registration.dto';
+import type { RegistrationDTO } from 'types';
 import { v4 as uuidv4 } from 'uuid';
-import type { TokenDTO } from './dto/token.dto';
+import type { TokenDTO } from 'types';
 
 const client_name = process.env.CLIENT_NAME || 'Post Context';
 const website = process.env.WEBSITE || 'http://localhost:5173';

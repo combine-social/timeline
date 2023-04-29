@@ -13,10 +13,27 @@ services:
         echo "Installing dependencies, migrating and starting api..."
         cd /app
         npm install
-        POSTGRES_CONNECTION_STRING=postgresql://root:test@db:5432/test npm -w apps/api run migrate up
+        POSTGRES_CONNECTION_STRING=postgresql://root:test@db:5432/test npm -w packages/repository run migrate up
         npm -w apps/api run start
     environment:
       - WEBSITE=http://localhost:8080
+      - DB_URL=postgresql://root:test@db:5432/test
+    depends_on:
+      - db
+
+  worker:
+    image: node:19
+    volumes:
+      - ".:/app"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo "Installing dependencies and starting worker..."
+        cd /app
+        npm install
+        npm -w apps/worker run start
+    environment:
       - REDIS_URL=redis://redis
       - DB_URL=postgresql://root:test@db:5432/test
       - QUEUE_URL=amqp://rabbitmq

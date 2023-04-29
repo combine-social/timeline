@@ -1,0 +1,15 @@
+VERSION 0.7
+IMPORT ../.. AS root
+
+all:
+  BUILD root+prune --app='worker'
+  BUILD root+build --app='worker'
+  FROM root+final --app='worker'
+  CMD [ \
+    "node", \
+    "-r", "ts-node/register", \
+    "-r", "tsconfig-paths/register", \
+    "--max-old-space-size=256", \
+    "/app/apps/api/dist/main.js" \
+  ]
+  SAVE IMAGE cyborch/toottail-worker:latest

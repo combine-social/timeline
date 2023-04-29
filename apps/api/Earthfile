@@ -1,10 +1,16 @@
 VERSION 0.7
 IMPORT ../.. AS root
+IMPORT ../../packages/repository AS repository
 
 all:
   BUILD root+prune --app='api'
   BUILD root+build --app='api'
-  FROM root+final --app='api'
+  BUILD repository+migrator
+
+  FROM root+final-image --app='api'
+  COPY repository+migrator/migrator .
+  DO root+FINALIZE_APP --app='api'
+
   CMD [ \
     "node", \
     "-r", "ts-node/register", \

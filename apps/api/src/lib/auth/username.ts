@@ -1,5 +1,5 @@
 import { login } from 'masto';
-import { TokenDTO } from './dto/token.dto';
+import { TokenDTO } from 'types';
 
 export async function getUsername(token: TokenDTO, instanceURL: string): Promise<string> {
 	const client = await login({

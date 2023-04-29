@@ -20,6 +20,12 @@
       ],
       "$lib/*": [
         "./src/lib/*"
+      ],
+      "$services": [
+        "./src/services"
+      ],
+      "$services/*": [
+        "./src/services/*"
       ]
     },
     "rootDirs": [
@@ -27,9 +33,7 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "../worker/src/dto",
-    "../../packages/repository/src/lib/db"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules"

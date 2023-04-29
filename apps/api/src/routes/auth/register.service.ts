@@ -1,15 +1,13 @@
+import { getAccessToken, getAuthorizationURL, getUsername, registerApplication } from '$lib/auth';
+import type { RegistrationDTO, TokenDTO } from 'types';
 import {
+	RegistrationModel,
+	TokenModel,
 	createRegistration,
-	upsertToken,
 	findRegistrationByInstance,
 	findRegistrationByNonce,
-	getAccessToken,
-	getAuthorizationURL,
-	getUsername,
-	registerApplication
-} from '$lib/auth';
-import type { RegistrationDTO, TokenDTO, RegistrationModel, TokenModel } from '$lib/auth';
-import { getHome } from '$services/context';
+	upsertToken
+} from 'repository';
 
 function registrationDtoToModel(
 	dto: RegistrationDTO,
@@ -63,7 +61,6 @@ export async function authenticate(nonce: string, code: string): Promise<string 
 	if (!dto) return undefined;
 	const username = await getUsername(dto, registration.instance_url);
 	const model = tokenDtoToModel(dto, registration, username);
-	const token = await upsertToken(model);
-	getHome(token).then().catch();
+	await upsertToken(model);
 	return username;
 }
