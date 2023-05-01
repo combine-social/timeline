@@ -38,6 +38,14 @@ export async function findAllTokens(): Promise<TokenModel[]> {
 	});
 }
 
+export async function getTokenCount(): Promise<number> {
+	return await connect(async (connection) => {
+		return await connection.oneFirst<number>(sql`
+      select count(1) from tokens
+    `);
+	});
+}
+
 export async function findTokensWorkerId(workerId: number): Promise<TokenModel[]> {
 	return await connect(async (connection) => {
 		const rows = await connection.many<TokenRow>(sql`

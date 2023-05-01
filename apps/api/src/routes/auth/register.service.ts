@@ -6,8 +6,11 @@ import {
 	createRegistration,
 	findRegistrationByInstance,
 	findRegistrationByNonce,
+	getTokenCount,
 	upsertToken
 } from 'repository';
+
+const workerCount = parseInt(process.env.WORKER_COUNT || '1');
 
 function registrationDtoToModel(
 	dto: RegistrationDTO,
@@ -36,6 +39,11 @@ function tokenDtoToModel(
 	} as TokenModel;
 }
 
+async function getWorkerId(): Promise<number> {
+	const tokenCount = await getTokenCount();
+	return (tokenCount % workerCount) + 1;
+}
+
 export async function register(instanceURL: string): Promise<string> {
 	let registration = await findRegistrationByInstance(instanceURL);
 	if (!registration) {
@@ -61,6 +69,7 @@ export async function authenticate(nonce: string, code: string): Promise<string 
 	if (!dto) return undefined;
 	const username = await getUsername(dto, registration.instance_url);
 	const model = tokenDtoToModel(dto, registration, username);
+	model.worker_id = await getWorkerId();
 	await upsertToken(model);
 	return username;
 }
