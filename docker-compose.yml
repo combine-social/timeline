@@ -37,6 +37,7 @@ services:
       - REDIS_URL=redis://redis
       - DB_URL=postgresql://root:test@db:5432/test
       - QUEUE_URL=amqp://rabbitmq
+      - WORKER_ID=1
     depends_on:
       - db
       - rabbitmq
