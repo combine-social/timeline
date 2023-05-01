@@ -10,6 +10,6 @@ all:
     "-r", "ts-node/register", \
     "-r", "tsconfig-paths/register", \
     "--max-old-space-size=1024", \
-    "/app/apps/api/dist/main.js" \
+    "/app/apps/worker/dist/main.js" \
   ]
   SAVE IMAGE cyborch/toottail-worker:latest

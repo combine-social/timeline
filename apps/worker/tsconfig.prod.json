@@ -1,19 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "baseUrl": "./apps/api",
+    "baseUrl": "./apps/worker",
     "paths": {
       "$lib": [
         "./dist/lib"
       ],
       "$lib/*": [
         "./dist/lib/*"
-      ],
-      "$services": [
-        "./dist/services"
-      ],
-      "$services/*": [
-        "./dist/services/*"
       ]
     }
   }
