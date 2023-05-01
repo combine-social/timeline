@@ -1,4 +1,4 @@
-import { findAllTokens, TokenModel } from 'repository';
+import { TokenModel } from 'repository';
 import { deleteKeysWithPrefix } from '$lib/cache';
 import { queueSize } from '$lib/queue';
 import { getNextContext } from './context';
@@ -49,7 +49,7 @@ function loopQueue() {
 }
 
 async function processAllTokens(): Promise<void> {
-	const tokens = await findAllTokens();
+	const tokens = await getTokens();
 	await Promise.all([
 		tokens.map(async (token) => {
 			if (await preparePopulateQueue(token)) {

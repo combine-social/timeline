@@ -1,7 +1,7 @@
-import { findAllTokens, TokenModel } from 'repository';
+import { findTokensWorkerId, TokenModel } from 'repository';
 
-const wokerId = parseInt(process.env.WORKER_ID || '1') || 1;
+const wokerId = parseInt(process.env.WORKER_ID || '1');
 
 export async function getTokens(): Promise<TokenModel[]> {
-	return await findAllTokens();
+	return await findTokensWorkerId(wokerId);
 }
