@@ -69,6 +69,7 @@ export async function upsertToken(token: Omit<TokenModel, 'id'>): Promise<TokenM
         token_type,
         scope,
         created_at,
+        worker_id,
         registration_id,
         fail_count
       ) values (
@@ -77,6 +78,7 @@ export async function upsertToken(token: Omit<TokenModel, 'id'>): Promise<TokenM
         ${token.token_type},
         ${token.scope},
         ${token.created_at},
+        ${token.worker_id},
         ${token.registration.id},
         ${token.fail_count !== undefined ? token.fail_count : null}
       ) on conflict on constraint uniq_username do update set 
@@ -84,6 +86,7 @@ export async function upsertToken(token: Omit<TokenModel, 'id'>): Promise<TokenM
         token_type = ${token.token_type},
         scope = ${token.scope},
         created_at = ${token.created_at},
+        worker_id = ${token.worker_id},
         registration_id = ${token.registration.id},
         fail_count = ${token.fail_count !== undefined ? token.fail_count : null}
       where tokens.username = ${token.username}
@@ -114,6 +117,7 @@ export async function updateToken(token: TokenModel): Promise<void> {
         token_type = ${token.token_type},
         scope = ${token.scope},
         created_at = ${token.created_at},
+        worker_id = ${token.worker_id},
         registration_id = ${token.registration.id},
         fail_count = ${token.fail_count !== undefined ? token.fail_count : null}
       where id = ${token.id}

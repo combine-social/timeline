@@ -6,4 +6,5 @@ export interface TokenModel extends TokenDTO {
 	username: string;
 	registration: RegistrationModel;
 	fail_count?: number;
+	worker_id: number;
 }

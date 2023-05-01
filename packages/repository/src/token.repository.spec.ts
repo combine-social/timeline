@@ -31,6 +31,7 @@ describe('upsertToken', () => {
 			token_type: 'c',
 			scope: 'd',
 			created_at: 1678953916,
+			worker_id: 1,
 			registration: {
 				id: 2,
 				instance_url: 'https://example.com',
@@ -51,12 +52,14 @@ describe('upsertToken', () => {
 			'c', // token_type
 			'd', // scope
 			1678953916, // created_at
+			1, // worker_id
 			2, // registration_id
 			0, // fail_count
 			'b', // access_token ( on conflict )
 			'c', // token_type ( on conflict )
 			'd', // scope ( on conflict )
 			1678953916, // created_at ( on conflict )
+			1, // worker_id ( on conflict )
 			2, // registration_id ( on conflict )
 			0, // fail_count ( on conflict )
 			'a' // username ( where clause in on conflict )
@@ -81,6 +84,7 @@ describe('updateToken', () => {
 			token_type: 'c',
 			scope: 'd',
 			created_at: 1678953916,
+			worker_id: 1,
 			registration: {
 				id: 2,
 				instance_url: 'https://example.com',
@@ -101,6 +105,7 @@ describe('updateToken', () => {
 			'c', // token_type
 			'd', // scope
 			1678953916, // created_at
+			1, // worker_id
 			2, // registration_id
 			0, // fail_count
 			1 // id
