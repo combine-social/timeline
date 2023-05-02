@@ -84,7 +84,6 @@ export async function getAccessToken(
 		code,
 		scope: 'read'
 	});
-	console.log(`Sending: ${params.toString()}`);
 	const tokenResponse = await fetch(`https://${instanceURL}/oauth/token`, {
 		method: 'POST',
 		headers: {
@@ -94,7 +93,6 @@ export async function getAccessToken(
 	});
 	if (tokenResponse.status === 200) {
 		const tokenJSON = await tokenResponse.json();
-		console.log({ tokenJSON });
 		return tokenJSON as TokenDTO;
 	} else {
 		console.error(`Failed getting token: ${tokenResponse.statusText}`);

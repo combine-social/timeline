@@ -13,7 +13,6 @@ export async function next<T extends object>(queue: string): Promise<T | null> {
 	await channel.assertQueue(queue);
 	const message = await channel.get(queue);
 	if (!message) return null;
-	console.log(`Queued message: ${message.content.toString()}`);
 	channel.ack(message);
 	return JSON.parse(message.content.toString());
 }
@@ -25,6 +24,5 @@ export async function send(queue: string, message: object) {
 
 export async function queueSize(queue: string) {
 	const assert = await channel.assertQueue(queue);
-	console.log(`assert: ${JSON.stringify(assert)}`);
 	return assert.messageCount;
 }

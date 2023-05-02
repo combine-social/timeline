@@ -23,7 +23,6 @@ async function getStatuses(
 			try {
 				const result = await pager.next();
 				const page = result.value;
-				console.log(`Statuses page: ${JSON.stringify(page, null, 2)}`);
 				return (
 					page?.filter((status) => {
 						const diff = new Date(status.createdAt).getTime() > since;

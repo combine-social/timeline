@@ -43,8 +43,6 @@ export async function code(
 	req: Express.Request<CodePathParameters, AuthCodeResponseBody, void, CodeRequestParameters>,
 	res: Express.Response<AuthCodeResponseBody>
 ) {
-	console.log(`nonce: ${req.params.nonce}`);
-	console.log(`code: ${req.query.code}`);
 	const nonce = req.params.nonce;
 	const code = req.query.code;
 	const username = await authenticate(nonce, code);

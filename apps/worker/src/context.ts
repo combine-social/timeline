@@ -14,7 +14,6 @@ export async function getNextContext(token: TokenModel): Promise<void> {
 			console.log(`${queue} queue is empty`);
 			return;
 		}
-		console.log(`Got ${JSON.stringify(request)} from queue: ${instance}`);
 		const meta = (await get<StatusCacheMetaData>(statusKey(instance, request.statusURL))) || {
 			original: request.statusURL,
 			level: 1
