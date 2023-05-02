@@ -14,7 +14,7 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
     "docker:build": "cd ../.. && earthly ./apps/web+all",
-		"docker:push": "docker push cyborch/toottail-web:latest"
+		"docker:push": "docker push cyborch/toottail-web:1.0.0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
