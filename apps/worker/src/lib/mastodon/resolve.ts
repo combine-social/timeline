@@ -15,7 +15,6 @@ export async function getContext(
 		statusURL
 	)}&resolve=true&limit=1&type=statuses`;
 	console.log(`Instance ${instanceURL} matches token: ${token?.id}`);
-	if (!token) return emptyContext();
 	const search = await throttledRequest<mastodon.v1.Search>(
 		instanceURL,
 		searchURL,
