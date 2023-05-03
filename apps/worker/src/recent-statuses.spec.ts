@@ -1,8 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
-import { getStatusURLsFromOutboxPage } from './notification';
+import { getStatusURLsFromOutboxPage } from './recent-statuses';
 import { page } from './notification.dto.spec';
 
-describe('notification', () => {
+describe('recent-statuses', () => {
 	it('filters and maps page to status urls', async () => {
 		const since = new Date('2023-03-21T00:00:00Z');
 		const statuses = getStatusURLsFromOutboxPage(page, since.getTime());

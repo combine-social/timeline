@@ -4,6 +4,7 @@ import { sendIfNotCached } from '$lib/conditional-queue';
 import { throttled } from '$lib/mastodon';
 import { mastodon } from 'masto';
 import { verifiedClient } from './client';
+import { getUnknownAccounts } from './unknown-accounts';
 
 const home_limit = 75;
 
@@ -81,4 +82,6 @@ export async function getHome(
 			}
 		);
 	}
+
+	await getUnknownAccounts(token, statuses, client);
 }
