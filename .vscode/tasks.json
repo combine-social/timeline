@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build repository",
+      "command": "npm",
+      "args": [
+        "run",
+        "-w",
+        "packages/repository",
+        "build"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      }
+    },
+    {
+      "label": "build types",
+      "command": "npm",
+      "args": [
+        "run",
+        "-w",
+        "packages/types",
+        "build"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      }
+    },
+    {
+      "label": "build packages",
+      "dependsOn": [
+        "build types",
+        "build repository"
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@
   "source": "src/main.ts",
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "npx ts-node-dev -r tsconfig-paths/register --files --transpile-only --respawn --inspect=4321 --project tsconfig.json src/main.ts",
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest",
     "docker:build": "cd ../.. && earthly ./apps/worker+all",

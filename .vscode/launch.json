@@ -29,6 +29,24 @@
         "<node_internals>/**"
       ],
       "type": "node"
+    },
+    {
+      "name": "Launch worker",
+      "request": "launch",
+      "runtimeArgs": [
+        "run",
+        "start:dev"
+      ],
+      "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}/apps/worker",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "env": {
+        "DB_URL": "postgresql://root:test@localhost:5432/test"
+      },
+      "type": "node",
+      "preLaunchTask": "build packages"
     }
   ]
 }
