@@ -5,6 +5,16 @@ import semaphore from 'semaphore';
 
 const semaphores = new Map<string, semaphore.Semaphore>();
 
+function lock(sem: semaphore.Semaphore): Promise<semaphore.Task> {
+	return new Promise((resolve) => {
+		sem.take(() => {
+			resolve(() => {
+				sem.leave();
+			});
+		});
+	});
+}
+
 /*
 	Request a resource from an instance.
 
@@ -54,7 +64,7 @@ export function throttledRequest<T extends object>(
 
 	Setting this to 30 requests per minute keeps it just under the limit.
 */
-export function throttled<T extends object>(
+export async function throttled<T extends object>(
 	instanceURL: string,
 	callback: () => Promise<T | null>,
 	requestsPerMinute = 30
@@ -62,24 +72,21 @@ export function throttled<T extends object>(
 	const delay = 60_000 / requestsPerMinute;
 	const sem = semaphores.get(instanceURL) || semaphore(1);
 	semaphores.set(instanceURL, sem);
-	return new Promise<T | null>((resolve) => {
-		sem.take(async () => {
-			const now = new Date().getTime(); // current time in millis
-			const latest: number = (await get(instanceKey(instanceURL))) || 0; // time of last request in millis
-			const waitTime = Math.max(delay - (now - latest), 0);
-			console.log(`Throttle delay: ${waitTime}`);
-			if (waitTime > 0) {
-				await sleep(waitTime);
-			}
-			try {
-				resolve(await callback());
-			} catch (error) {
-				console.error(error);
-				resolve(null);
-			} finally {
-				await set(instanceKey(instanceURL), new Date().getTime(), 300);
-				sem.leave();
-			}
-		});
-	});
+	const unlock = await lock(sem);
+	const now = new Date().getTime(); // current time in millis
+	const latest: number = (await get(instanceKey(instanceURL))) || 0; // time of last request in millis
+	const waitTime = Math.max(delay - (now - latest), 0);
+	console.log(`Throttle delay: ${waitTime}`);
+	if (waitTime > 0) {
+		await sleep(waitTime);
+	}
+	try {
+		return await callback();
+	} catch (error) {
+		console.error(error);
+		return null;
+	} finally {
+		await set(instanceKey(instanceURL), new Date().getTime(), 300);
+		await unlock();
+	}
 }
