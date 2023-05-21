@@ -60,6 +60,8 @@ services:
 
   redis:
     image: "redis:alpine"
+    ports:
+      - "6379:6379"
 
   db:
     image: "postgres:14.2-alpine"
@@ -74,6 +76,7 @@ services:
   rabbitmq:
     image: "rabbitmq:3.11-management-alpine"
     ports:
+      - "5672:5672"
       - "15672:15672"
 
   nginx:
