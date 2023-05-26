@@ -11,7 +11,7 @@
     "migrate": "cd ../../packages/repository && npm run migrate",
     "migrate:local": "cd ../../packages/repository && npm run migrate:local",
     "docker:build": "cd ../.. && earthly ./apps/api+all",
-    "docker:push": "docker push cyborch/toottail-api:latest"
+    "docker:push": "docker push ghcr.io/combine-social/timeline-api:latest"
   },
   "author": "Anders Borch <anders@cyborch.com>",
   "license": "MIT",

@@ -18,4 +18,4 @@ all:
     "--max-old-space-size=256", \
     "/app/apps/api/dist/main.js" \
   ]
-  SAVE IMAGE cyborch/toottail-api:latest
+  SAVE IMAGE ghcr.io/combine-social/timeline-api:latest
