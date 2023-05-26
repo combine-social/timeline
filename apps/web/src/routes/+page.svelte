@@ -94,8 +94,8 @@
 			</p>
 
 			<p>
-				The <a href="https://github.com/cyborch/toottail">source code</a> is also available if you want
-				to know what is going on or host the solution yourself.
+				The <a href="https://github.com/combine-social/timeline">source code</a> is also available if
+				you want to know what is going on or host the solution yourself.
 			</p>
 		</div>
 
