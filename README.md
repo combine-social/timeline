@@ -118,7 +118,7 @@ To test that everything is running smoothly, browse to [localhost:8080](http://l
 ## Building for production
 
 **Caveat:** The build files assume that images are built and pushed to
-`cyborch/toottail-<service_name>:latest`. The individual `Earthly` files can be
+`ghcr.io/combine-social/timeline-<service_name>:latest`. The individual `Earthly` files can be
 updated to reflect wherever you want to build and push images to.
 
 To build the images for production use, run:
