@@ -10,7 +10,7 @@
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest",
     "docker:build": "cd ../.. && earthly ./apps/worker+all",
-    "docker:push": "docker push ghcr.io/combine-social/timeline-worker:latest"
+    "docker:push": "docker push ghcr.io/combine-social/timeline-worker:1.1.1"
   },
   "author": "Anders Borch <anders@cyborch.com>",
   "license": "MIT",

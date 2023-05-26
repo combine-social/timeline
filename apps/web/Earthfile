@@ -12,4 +12,4 @@ all:
     "--max-old-space-size=128", \
     "/app/apps/web/dist/index.js" \
   ]
-  SAVE IMAGE ghcr.io/combine-social/timeline-web:latest
+  SAVE IMAGE ghcr.io/combine-social/timeline-web:1.0.1
