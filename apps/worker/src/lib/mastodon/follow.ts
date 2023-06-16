@@ -21,7 +21,7 @@ export async function isFollowing(
 			return await client.v1.accounts.listFollowing(verify.id);
 		});
 		following = (accounts || []).map((account) => account.username);
-		set(followKey(token.username), following, followListTimeout);
+		await set(followKey(token.username), following, followListTimeout);
 	}
 	return following.includes(username);
 }
