@@ -9,7 +9,7 @@
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest",
     "migrate": "node bin/migrate.js",
-    "migrate:local": "POSTGRES_CONNECTION_STRING=postgresql://localhost:5432/test node bin/migrate.js"
+    "migrate:local": "POSTGRES_CONNECTION_STRING=postgresql://root:test@localhost:5432/test node bin/migrate.js"
   },
   "author": "Anders Borch <anders@cyborch.com>",
   "license": "MIT",
