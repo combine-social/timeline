@@ -12,4 +12,4 @@ all:
     "--max-old-space-size=1024", \
     "/app/apps/worker/dist/main.js" \
   ]
-  SAVE IMAGE ghcr.io/combine-social/timeline-worker:latest
+  SAVE IMAGE ghcr.io/combine-social/timeline-worker:1.1.2
