@@ -4,6 +4,12 @@
   margin-right: 10vw;
 }
 
+p * {
+  text-align: unset;
+  margin-left: unset;
+  margin-right: unset;
+}
+
 button {
   margin-left: auto;
   margin-right: auto;

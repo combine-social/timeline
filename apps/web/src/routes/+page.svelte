@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Login } from '$lib/components/login';
+	import { PUBLIC_BMC } from '$env/static/public';
 </script>
 
 <template>
@@ -114,6 +115,7 @@
 		<div class="footer">
 			<p><a href="/license">License</a></p>
 			<p><a href="/privacy">Privacy Policy</a></p>
+			<p><a href={PUBLIC_BMC} target="_blank" rel="noopener noreferrer">Buy me a coffee</a></p>
 			<p>
 				&copy; {new Date().getFullYear()}{' '}
 				<a href="https://borch-andersen.com">Borch-Andersen ApS</a>

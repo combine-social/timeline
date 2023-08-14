@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { openInstanceURL } from './success';
+	import { PUBLIC_BMC } from '$env/static/public';
 </script>
 
 <template>
@@ -13,6 +14,13 @@
 		you don't see replies immediately, then don't despair, wait a little and try again later.
 	</p>
 	<button on:click={openInstanceURL}>Go to your timeline</button>
+	<p>
+		If you like this service, then consider <a
+			href={PUBLIC_BMC}
+			target="_blank"
+			rel="noopener noreferrer">buying me a coffee</a
+		>.
+	</p>
 </template>
 
 <style src="./success.css"></style>
