@@ -1,29 +1,38 @@
-import { login as getClient } from 'masto';
-import type { LoginReponseBody, LoginRequestBody } from 'types';
+import type { LoginReponseBody, LoginRequestBody, VerifyResponseBody } from 'types';
 
-async function verifiedInstanceName(instance: string): Promise<string | null> {
+interface InstanceVerification {
+	instanceURL: string;
+	verified: boolean;
+	status: string;
+}
+
+async function verifiedInstance(instance: string): Promise<InstanceVerification> {
 	try {
 		const url = new URL(instance.startsWith('http') ? instance : `https://${instance}`);
 		const hostname = url.hostname;
-		const client = await getClient({
-			url: url.toString(),
-			disableDeprecatedWarning: true,
-			disableVersionCheck: true
-		});
-		const response = await client.v2.instance.fetch();
-		return parseInt(response.version) >= 4 ? hostname : null;
+		const response = await fetch(`/api/v1/verify?host=${hostname}`);
+		const result: VerifyResponseBody = await response.json();
+		return {
+			instanceURL: hostname,
+			verified: result.verified,
+			status: result.text,
+		}
 	} catch (error) {
 		console.error(error);
-		return null;
+		return {
+			instanceURL: instance,
+			verified: false,
+			status: `Failed to connect to ${instance}`,
+		};
 	}
 }
 
 export async function loginOrReturnError(instance: string): Promise<string | null> {
 	if (!instance) return 'enter a mastodon instance name';
-	const instanceURL = await verifiedInstanceName(instance);
-	if (!instanceURL) return `${instance} is not a valid mastodon instance`;
+	const verification = await verifiedInstance(instance);
+	if (!verification.verified) return verification.status;
 	const body: LoginRequestBody = {
-		instanceURL
+		instanceURL: verification.instanceURL,
 	};
 	const response = await fetch('/api/v1/auth/login', {
 		method: 'POST',

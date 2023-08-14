@@ -14,3 +14,8 @@ export interface LoginReponseBody {
 export interface LoginErrorBody {
 	error: string;
 }
+
+export interface VerifyResponseBody {
+	verified: boolean;
+	text: string;
+}
