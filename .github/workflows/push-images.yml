@@ -38,7 +38,7 @@ jobs:
           version: "0.7"
 
       - name: Setup BMC
-        run: echo "PUBLIC_BMC=${{ env.PUBLIC_BMC }}" > apps/web/.env
+        run: echo "PUBLIC_BMC=${{ vars.PUBLIC_BMC }}" > apps/web/.env
 
       - name: Build and push docker images
         run: npm run docker:push

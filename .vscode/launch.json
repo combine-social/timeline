@@ -28,7 +28,8 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "type": "node"
+      "type": "node",
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "name": "Launch worker",
