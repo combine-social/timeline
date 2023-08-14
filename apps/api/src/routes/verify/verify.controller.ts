@@ -18,5 +18,10 @@ export async function verify(
             verified: false,
 			text: `${instanceURL} does not appear to be a Mastodon instance (or connection failed)`
 		});
+	} else {
+		return res.status(200).send({
+            verified: true,
+			text: ''
+		});
 	}
 }
