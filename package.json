@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "author": "Anders Borch <anders@cyborch.com>",
   "description": "Monitor your home timeline and pre-fetch contexts for all messages",
   "license": "MIT",
