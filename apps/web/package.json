@@ -1,6 +1,6 @@
 {
 	"name": "web",
-	"version": "1.0.2",
+	"version": "1.3.0",
 	"private": true,
 	"scripts": {
 		"postinstall": "svelte-kit sync || true",
@@ -13,7 +13,7 @@
 		"test": "vitest --run",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-    "docker:build": "cd ../.. && earthly ./apps/web+all",
+		"docker:build": "cd ../.. && earthly ./apps/web+all",
 		"docker:push": "docker push ghcr.io/combine-social/timeline-web:latest"
 	},
 	"devDependencies": {
