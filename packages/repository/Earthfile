@@ -1,8 +1,0 @@
-VERSION 0.7
-
-migrator:
-  FROM scratch
-  WORKDIR /app
-  COPY ./bin ./bin
-  COPY ./migrations ./migrations
-  SAVE ARTIFACT /app /migrator
