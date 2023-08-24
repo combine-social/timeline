@@ -7,15 +7,12 @@
   "types": "src/index.ts",
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "test": "jest",
-    "migrate": "node bin/migrate.js",
-    "migrate:local": "POSTGRES_CONNECTION_STRING=postgresql://root:test@localhost:5432/test node bin/migrate.js"
+    "test": "jest"
   },
   "author": "Anders Borch <anders@cyborch.com>",
   "license": "MIT",
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@slonik/migrator": "^0.11.3",
     "@tsconfig/node18": "^1.0.1",
     "@types/node": "^18.14.6",
     "eslint": "^8.35.0",
