@@ -21,7 +21,8 @@ function registrationDtoToModel(
 		...dto,
 		registration_id: dto.id,
 		instance_url,
-		nonce
+		nonce,
+		sns: 'mastodon' // TODO: call sns detector service
 	};
 	delete model.id;
 	return model as unknown as RegistrationModel;

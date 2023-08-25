@@ -51,7 +51,8 @@ export async function createRegistration(
         client_id,
         client_secret,
         vapid_key,
-        nonce
+        nonce,
+        sns
       ) values (
         ${registration.instance_url || null},
         ${registration.registration_id},
@@ -61,7 +62,8 @@ export async function createRegistration(
         ${registration.client_id},
         ${registration.client_secret},
         ${registration.vapid_key || null},
-        ${registration.nonce}
+        ${registration.nonce},
+        ${registration.sns || null},
       ) returning id
     `);
 		return {
@@ -83,7 +85,8 @@ export async function updateRegistration(registration: RegistrationModel): Promi
         client_id = ${registration.client_secret || null},
         client_secret = ${registration.vapid_key || null},
         vapid_key = ${registration.vapid_key || null},
-        nonce = ${registration.nonce}
+        nonce = ${registration.nonce},
+        sns = ${registration.sns || null}
       where id = ${registration.id}
     `);
 	});

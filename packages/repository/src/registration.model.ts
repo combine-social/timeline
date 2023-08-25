@@ -5,4 +5,5 @@ export interface RegistrationModel extends Omit<RegistrationDTO, 'id'> {
 	registration_id: string;
 	instance_url: string;
 	nonce: string;
+	sns?: string;
 }

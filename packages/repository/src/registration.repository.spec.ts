@@ -34,7 +34,8 @@ describe('createRegistration', () => {
 			client_id: 'a',
 			client_secret: 'b',
 			vapid_key: 'c',
-			nonce: 'd'
+			nonce: 'd',
+			sns: 'mastodon'
 		});
 		expect(values).toEqual([
 			'https://example.com',
@@ -45,7 +46,8 @@ describe('createRegistration', () => {
 			'a',
 			'b',
 			'c',
-			'd'
+			'd',
+			'mastodon'
 		]);
 		expect(model.id).toEqual(1);
 	});
