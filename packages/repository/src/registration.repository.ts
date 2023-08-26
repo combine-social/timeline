@@ -63,7 +63,7 @@ export async function createRegistration(
         ${registration.client_secret},
         ${registration.vapid_key || null},
         ${registration.nonce},
-        ${registration.sns || null},
+        ${registration.sns || null}
       ) returning id
     `);
 		return {
