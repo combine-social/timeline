@@ -14,9 +14,10 @@ function username(resource: string): string | undefined {
 }
 
 export function getWebFinger(resource: string): WebFinger {
+    const host = new URL(website).host;
     let user = username(resource);
     return {
-        "subject": `acct:${user}@${website}`,
+        "subject": `acct:${user}@${host}`,
         "links": [
             {
                 "rel": "self",
