@@ -8,8 +8,6 @@
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest",
-    "migrate": "cd ../../packages/repository && npm run migrate",
-    "migrate:local": "cd ../../packages/repository && npm run migrate:local",
     "docker:build": "cd ../.. && earthly ./apps/api+all",
     "docker:push": "docker push ghcr.io/combine-social/timeline-api:latest"
   },
@@ -17,7 +15,6 @@
   "license": "MIT",
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@slonik/migrator": "^0.11.3",
     "@tsconfig/node18": "^1.0.1",
     "@types/amqplib": "^0.10.1",
     "@types/express": "^4.17.17",
