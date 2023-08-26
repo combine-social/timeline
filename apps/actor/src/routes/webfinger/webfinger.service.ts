@@ -9,20 +9,15 @@ export function hasResource(resource: string): boolean {
     return resource === `acct:actor@${host}`; // currently, 'actor' is the only valid resource
 }
 
-function username(resource: string): string | undefined {
-    return resource.split(':').at(1)?.split('@').at(0);
-}
-
 export function getWebFinger(resource: string): WebFinger {
     const host = new URL(website).host;
-    let user = username(resource);
     return {
-        "subject": `acct:${user}@${host}`,
+        "subject": `acct:actor@${host}`,
         "links": [
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": `${website}/${user}`
+                "href": `${website}/api/v1/actor`
             }
         ]
     };
