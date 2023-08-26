@@ -10,10 +10,9 @@ services:
       - /bin/sh
       - -c
       - |
-        echo "Installing dependencies, migrating and starting api..."
+        echo "Installing dependencies and starting api..."
         cd /app
         npm install
-        POSTGRES_CONNECTION_STRING=postgresql://root:test@db:5432/test npm -w packages/repository run migrate up
         npm -w apps/api run start
     environment:
       - WEBSITE=http://localhost:8080
