@@ -134,10 +134,13 @@ services:
               location / {
                 proxy_pass http://webbackend;
               }
-              location /api/v1/auth {
+              location /api {
                 proxy_pass http://apibackend;
               }
               location /api/v1/actor {
+                proxy_pass http://actorbackend;
+              }
+              location /.well-known/webfinger {
                 proxy_pass http://actorbackend;
               }
             }
