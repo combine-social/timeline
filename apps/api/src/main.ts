@@ -9,10 +9,6 @@ const port = parseInt(process.env.PORT || '0') || 3000;
 
 app.use(express.json());
 
-app.get('/api', (req: Request, res: Response) => {
-	res.send({ result: 'ok' });
-});
-
 initializeDB();
 (async () => {
 	try {

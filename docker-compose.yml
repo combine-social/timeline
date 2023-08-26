@@ -21,6 +21,30 @@ services:
     depends_on:
       - db
 
+  actor:
+    image: node:19
+    ports:
+      - "3001:3001"
+    volumes:
+      - ".:/app"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo "Installing dependencies, migrating and starting actor..."
+        cd /app
+        apt-get update && apt-get install -y openssl
+        (
+          mkdir -p key
+          cd key
+          openssl genrsa -out private.pem 2048
+          openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+        )
+        npm install
+        npm -w apps/actor run start
+    environment:
+      - WEBSITE=http://localhost:8080
+
   worker:
     image: node:19
     volumes:
@@ -103,13 +127,19 @@ services:
             upstream apibackend {
               server api:3000 fail_timeout=20s max_fails=5;
             }
+            upstream actorbackend {
+              server actor:3000 fail_timeout=20s max_fails=5;
+            }
             server {
               listen 8080;
               location / {
                 proxy_pass http://webbackend;
               }
-              location /api {
+              location /api/v1/auth {
                 proxy_pass http://apibackend;
+              }
+              location /api/v1/actor {
+                proxy_pass http://actorbackend;
               }
             }
           }

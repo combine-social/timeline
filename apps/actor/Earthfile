@@ -1,0 +1,16 @@
+VERSION 0.7
+IMPORT ../.. AS root
+IMPORT ../../packages/repository AS repository
+
+all:
+  BUILD root+prune --app='actor'
+  BUILD root+build --app='actor'
+  FROM root+final --app='actor'
+  CMD [ \
+    "node", \
+    "-r", "ts-node/register", \
+    "-r", "tsconfig-paths/register", \
+    "--max-old-space-size=128", \
+    "/app/apps/actor/dist/main.js" \
+  ]
+  SAVE IMAGE ghcr.io/combine-social/timeline-actor:latest
