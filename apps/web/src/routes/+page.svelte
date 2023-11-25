@@ -18,7 +18,7 @@
 				showing up in your notifications.
 			</p>
 
-			<button class="cta" on:click={() => (document.location.href = '#signup')}>Get Started</button>
+			<!-- <button class="cta" on:click={() => (document.location.href = '#signup')}>Get Started</button> -->
 		</div>
 
 		<div>
@@ -101,6 +101,11 @@
 		</div>
 
 		<div>
+			<h2>Signups currently closed</h2>
+			<p>Check back later. Sorry for the inconvenience.</p>
+		</div>
+
+		<!-- <div>
 			<h2 id="signup">Sign Me Up!</h2>
 
 			<p><strong>Getting started is really easy:</strong></p>
@@ -110,7 +115,7 @@
 				<li>There is no step 3!</li>
 			</ol>
 			<Login />
-		</div>
+		</div> -->
 
 		<div class="footer">
 			<p><a href="/license">License</a></p>
